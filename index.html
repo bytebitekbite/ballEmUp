@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ball Them Up - Final Boss Edition</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #111;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #050505;
+        }
+        canvas {
+            display: block;
+            background-color: #1a1a1a;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #fff;
+            font-size: 20px;
+            pointer-events: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        #dash-ui {
+            font-size: 16px;
+            color: #54a0ff;
+            font-weight: bold;
+        }
+        #weapon-ui {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #fff;
+            font-size: 18px;
+            background: rgba(0,0,0,0.6);
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid #ff4757;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            z-index: 5;
+        }
+        #boss-ui {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ff4757;
+            text-align: center;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.3);
+            z-index: 5;
+        }
+        #boss-bar-container {
+            width: 100%;
+            height: 16px;
+            background: #222;
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        #boss-bar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #ff4757, #ff6b81);
+            transition: width 0.1s ease-out;
+        }
+        #boss-status {
+            font-size: 12px;
+            color: #ffd32a;
+            margin-top: 3px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        #screen, #pause-screen, #settings-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0,0,0,0.85);
+            color: white;
+            z-index: 10;
+        }
+        #pause-screen {
+            background-color: rgba(0,0,0,0.75);
+            z-index: 9;
+        }
+        #settings-screen {
+            z-index: 15;
+            background-color: rgba(15, 15, 20, 0.95);
+        }
+        .menu-box {
+            background: rgba(30, 30, 40, 0.6);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            min-width: 320px;
+        }
+        h1 {
+            font-size: 56px;
+            margin: 0 0 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(255, 71, 87, 0.6);
+            text-align: center;
+        }
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 260px;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 18px;
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            width: 100%;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #ff6b81;
+            transform: scale(1.03);
+        }
+        button.secondary {
+            background-color: #4b6584;
+        }
+        button.secondary:hover {
+            background-color: #778ca3;
+        }
+        button.small-gear {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            padding: 0;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #2f3542;
+            border-radius: 50%;
+        }
+        button.small-gear:hover {
+            background-color: #57606f;
+        }
+        #victory-medal {
+            position: absolute;
+            top: 20px;
+            right: 90px;
+            font-size: 40px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            animation: pulse 2s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .setting-row label {
+            color: #ccc;
+        }
+        .setting-row input[type="range"] {
+            width: 150px;
+            accent-color: #ff4757;
+        }
+        .setting-row select {
+            width: 150px;
+            padding: 5px;
+            background: #2f3542;
+            color: white;
+            border: 1px solid #57606f;
+            border-radius: 4px;
+        }
+        .hidden {
+            display: none !important;
+        }
+        #wave-timer {
+            font-size: 24px;
+            color: #ffd32a;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ui" class="hidden">
+        <div id="wave-display">Волна: 1 / 5</div>
+        <div id="enemies-display">Врагов осталось: 3</div>
+        <div id="wave-timer" class="hidden">Новая волна через: 3</div>
+        <div id="dash-ui">РЫВОК: ГОТОВ [LShift]</div>
+    </div>
+
+    <div id="weapon-ui" class="hidden">
+        Оружие: <span id="weapon-name" style="color: #ff4757; font-weight: bold;">Пистолет [1]</span><br>
+        Патроны: <span id="weapon-ammo" style="font-weight: bold;">15 / 15</span>
+    </div>
+
+    <div id="boss-ui" class="hidden">
+        <div id="boss-name-ui" style="font-weight: bold; letter-spacing: 1px; color: #ff4757;">ХРАНИТЕЛЬ АРЕНЫ</div>
+        <div id="boss-bar-container">
+            <div id="boss-bar"></div>
+        </div>
+        <div id="boss-status">Этап 1</div>
+    </div>
+
+    <div id="screen">
+        <div id="victory-medal" class="hidden">🥇</div>
+        <button id="gear-btn" class="small-gear" onclick="openSettings()">⚙</button>
+        <h1 id="screen-title" style="color: #ff4757;">BALL THEM UP</h1>
+        <div id="screen-desc" style="font-size: 16px; margin-bottom: 30px; color: #ccc; text-align: center; line-height: 1.6;">
+            Управление: WASD — движение, ПРОБЕЛ — стрельба, ESC — пауза.<br>
+            <span style="color: #ffd32a; font-weight: bold;">[R] — Перезарядка</span> | <span style="color: #54a0ff; font-weight: bold;">[LSHIFT] — Рывок</span><br>
+            Оружие: <span style="color: #ff4757;">[1] Пистолет</span>, <span style="color: #ffa502;">[2] Дробовик</span>, <span style="color: #2ed573;">[3] Автомат</span>, <span style="color: #ff9f43;">[4] Огнемёт</span>
+        </div>
+        <div class="btn-group" id="screen-btn-group">
+            <button id="screen-btn" onclick="startGame()">Играть</button>
+        </div>
+    </div>
+
+    <div id="pause-screen" class="hidden">
+        <div class="menu-box">
+            <h2 style="color: #ffd32a; font-size: 36px; margin: 0; text-transform: uppercase;">Пауза</h2>
+            <div class="btn-group" style="margin-top: 10px;">
+                <button onclick="togglePause()">Продолжить</button>
+                <button class="secondary" onclick="openSettings()">Настройки</button>
+                <button class="secondary" style="background-color: #3d3d3d;" onclick="exitToMainMenu()">В главное меню</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="settings-screen" class="hidden">
+        <div class="menu-box" style="min-width: 360px;">
+            <h2 style="color: #ff4757; margin: 0 0 10px 0; text-transform: uppercase;">Настройки</h2>
+            <div class="setting-row">
+                <label>Громкость музыки</label>
+                <input type="range" id="volume-music" min="0" max="100" value="70" oninput="updateVolumes()">
+            </div>
+            <div class="setting-row">
+                <label>Громкость эффектов</label>
+                <input type="range" id="volume-sfx" min="0" max="100" value="60" oninput="updateVolumes()">
+            </div>
+            <div class="setting-row">
+                <label>Графика</label>
+                <select id="graphics-quality" onchange="changeGraphicsQuality()">
+                    <option value="high">Ультра (Эффекты)</option>
+                    <option value="medium" selected>Стандартная</option>
+                    <option value="pixel">Pixel Art (Ретро)</option>
+                </select>
+            </div>
+            <button class="secondary" style="margin-top: 10px;" onclick="closeSettings()">Назад</button>
+        </div>
+    </div>
+
+    <div id="canvas-container">
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        const uiElements = document.getElementById('ui');
+        const uiWave = document.getElementById('wave-display');
+        const uiEnemies = document.getElementById('enemies-display');
+        const uiWaveTimer = document.getElementById('wave-timer');
+        const uiDash = document.getElementById('dash-ui');
+        const uiWeaponName = document.getElementById('weapon-name');
+        const uiWeaponAmmo = document.getElementById('weapon-ammo');
+        const uiWeaponPanel = document.getElementById('weapon-ui');
+        const bossUi = document.getElementById('boss-ui');
+        const bossBar = document.getElementById('boss-bar');
+        const bossStatusText = document.getElementById('boss-status');
+        const bossNameUi = document.getElementById('boss-name-ui');
+        
+        const screen = document.getElementById('screen');
+        const screenTitle = document.getElementById('screen-title');
+        const screenBtn = document.getElementById('screen-btn');
+        const screenDesc = document.getElementById('screen-desc');
+        const screenBtnGroup = document.getElementById('screen-btn-group');
+        const gearBtn = document.getElementById('gear-btn');
+        const pauseScreen = document.getElementById('pause-screen');
+        const settingsScreen = document.getElementById('settings-screen');
+        const victoryMedal = document.getElementById('victory-medal');
+
+        let gameRunning = false;
+        let isPaused = false; 
+        let currentWave = 1;
+        const waveConfig = { 1: 3, 2: 4, 3: 7, 4: 10, 5: 1 }; 
+        const ARENA_SIZE = 1200; 
+
+        let volumeMusicModifier = 0.7;
+        let volumeSfxModifier = 0.6;
+        let currentGraphicsMode = 'medium'; 
+        let previousAudioContextState = 'main';
+        let hasEarnedMedal = false;
+
+        const player = {
+            x: ARENA_SIZE / 2, y: ARENA_SIZE / 2, radius: 20, speed: 4, angle: 0, currentWeapon: 1, 
+            isDashing: false, dashTimer: 0, dashCooldown: 0, dashDx: 0, dashDy: 0,
+            pistolMaxAmmo: 15, pistolShotsLeft: 15, pistolReloading: false, pistolReloadTimer: 0, pistolCooldown: 0, pistolHasReleased: true,
+            shotgunMaxAmmo: 5, shotgunShotsLeft: 5, shotgunReloading: false, shotgunReloadTimer: 0,
+            rifleMaxAmmo: 20, rifleAmmoLeft: 20, rifleReloading: false, rifleReloadTimer: 0, rifleFireCooldown: 0,
+            flamerActiveTime: 0, flamerCooldown: 0, flamerIsOverheated: false  
+        };
+
+        let bullets = []; let flames = []; let bossBullets = []; let enemyBullets = []; let enemies = []; 
+        let ammoDrops = []; let particles = []; let turrets = [];
+
+        let waveTransition = false; let waveTransitionTimer = 0; 
+        const keys = { KeyW: false, KeyA: false, KeyS: false, KeyD: false, Space: false, ShiftLeft: false };
+        const mouse = { x: 0, y: 0 };
+        let canShoot = true; let bossShootTimer = 0;
+
+        let bossShieldActive = false; let bossShieldTriggered = false; let bossEnraged = false; 
+
+        let audioCtx = null; let musicInterval = null; let menuMusicInterval = null; let musicStep = 0; let currentActiveMusicType = null;
+
+        function initAudio() {
+            if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+        }
+
+        // SFX
+        function playLaserSound() { if (isPaused) return; initAudio(); let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(420, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(90, audioCtx.currentTime + 0.1); gain.gain.setValueAtTime(0.05 * volumeSfxModifier, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.1); osc.start(); osc.stop(audioCtx.currentTime + 0.1); }
+        function playRifleSound() { if (isPaused) return; initAudio(); let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(550, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.08); gain.gain.setValueAtTime(0.03 * volumeSfxModifier, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.08); osc.start(); osc.stop(audioCtx.currentTime + 0.08); }
+        function playShotgunSound() { if (isPaused) return; initAudio(); for(let i = 0; i < 3; i++) { let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(180 + (i * 40), audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(35, audioCtx.currentTime + 0.22); gain.gain.setValueAtTime(0.10 * volumeSfxModifier, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.22); osc.start(); osc.stop(audioCtx.currentTime + 0.22); } }
+        function playBossLaserSound() { if (isPaused) return; initAudio(); let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(220, audioCtx.currentTime); osc.frequency.linearRampToValueAtTime(50, audioCtx.currentTime + 0.35); gain.gain.setValueAtTime(0.2 * volumeSfxModifier, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.35); osc.start(); osc.stop(audioCtx.currentTime + 0.35); }
+        function playDashSound() { if (isPaused) return; initAudio(); let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'triangle'; osc.frequency.setValueAtTime(150, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.15); gain.gain.setValueAtTime(0.08 * volumeSfxModifier, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.15); osc.start(); osc.stop(audioCtx.currentTime + 0.15); }
+        function playFlameSound() { if (isPaused) return; initAudio(); let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(90 + Math.random() * 60, audioCtx.currentTime); osc.frequency.linearRampToValueAtTime(30, audioCtx.currentTime + 0.12); gain.gain.setValueAtTime(0.04 * volumeSfxModifier, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.12); osc.start(); osc.stop(audioCtx.currentTime + 0.12); }
+
+        function startMenuMusic(type) {
+            stopMenuMusic(); stopMusic(); initAudio();
+            currentActiveMusicType = type;
+            let step = 0; let speed = 250; 
+            
+            menuMusicInterval = setInterval(() => {
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                
+                if (type === 'main' || type === 'settings') {
+                    // Завывающая, мрачная, но красочная
+                    speed = 400;
+                    osc.type = 'sine';
+                    // Плавное изменение частоты для эффекта завывания
+                    let baseFreq = 164.81; // E3
+                    let colorfulNotes = [246.94, 329.63, 220.00]; // B3, E4, A3
+                    let currentNote = (step % 4 === 0) ? colorfulNotes[(step/4) % colorfulNotes.length] : baseFreq;
+                    
+                    osc.frequency.setValueAtTime(currentNote, audioCtx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(currentNote + (Math.sin(step)*10), audioCtx.currentTime + 0.3);
+                    
+                    gain.gain.setValueAtTime(0.12 * volumeMusicModifier, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+                } 
+                else if (type === 'victory') {
+                    // Медленные, зацикленные, торжественные фанфары
+                    speed = 600;
+                    const heroicChords = [261.63, 329.63, 392.00, 523.25]; // C Major Arp
+                    osc.type = 'square';
+                    let note = heroicChords[step % heroicChords.length];
+                    
+                    osc.frequency.setValueAtTime(note, audioCtx.currentTime);
+                    
+                    // Дополнительный слой (гармония)
+                    let osc2 = audioCtx.createOscillator(); let gain2 = audioCtx.createGain();
+                    osc2.connect(gain2); gain2.connect(audioCtx.destination);
+                    osc2.type = 'sawtooth';
+                    osc2.frequency.setValueAtTime(note / 2, audioCtx.currentTime);
+                    gain2.gain.setValueAtTime(0.08 * volumeMusicModifier, audioCtx.currentTime);
+                    gain2.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+                    osc2.start(); osc2.stop(audioCtx.currentTime + 0.5);
+                    
+                    gain.gain.setValueAtTime(0.1 * volumeMusicModifier, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+                }
+                else if (type === 'defeat') {
+                    speed = 380;
+                    osc.type = 'sine';
+                    let notes = [146.83, 130.81];
+                    osc.frequency.setValueAtTime(notes[step % notes.length], audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.11 * volumeMusicModifier, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+                }
+                else if (type === 'pause') {
+                    speed = 450;
+                    osc.type = 'triangle';
+                    let notes = [220, 261, 329];
+                    osc.frequency.setValueAtTime(notes[step % notes.length], audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.08 * volumeMusicModifier, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                }
+
+                osc.start(); osc.stop(audioCtx.currentTime + (speed/1000));
+                step++;
+            }, speed);
+        }
+
+        function stopMenuMusic() {
+            if (menuMusicInterval) { clearInterval(menuMusicInterval); menuMusicInterval = null; }
+            currentActiveMusicType = null;
+        }
+
+        function startMusic() {
+            stopMusic(); stopMenuMusic(); initAudio();
+            musicStep = 0; 
+            const tempo = currentWave === 5 ? 160 : 110; 
+            const intervalTime = (60 / tempo) * 500; 
+
+            musicInterval = setInterval(() => {
+                if (!gameRunning || isPaused) return; 
+                let osc = audioCtx.createOscillator(); 
+                let gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                
+                if (currentWave === 5) {
+                    // Тяжелый рок: быстрый ритм, низкие пилообразные волны
+                    const rockBass = [41.20, 41.20, 41.20, 55.00, 41.20, 61.74]; // E1, G1, B1
+                    osc.type = 'sawtooth';
+                    let note = rockBass[musicStep % rockBass.length];
+                    osc.frequency.setValueAtTime(note, audioCtx.currentTime);
+                    gain.gain.setValueAtTime((musicStep % 2 === 0 ? 0.25 : 0.15) * volumeMusicModifier, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                } else {
+                    const regularBass = [55, 55, 65, 55, 48, 48, 52, 50];
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(regularBass[musicStep % regularBass.length], audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.2 * volumeMusicModifier, audioCtx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+                }
+
+                osc.start(); osc.stop(audioCtx.currentTime + (intervalTime/1000));
+                musicStep++;
+            }, intervalTime);
+        }
+
+        function stopMusic() {
+            if (musicInterval) { clearInterval(musicInterval); musicInterval = null; }
+        }
+
+        function openSettings() {
+            if (!screen.classList.contains('hidden')) { previousAudioContextState = 'main'; } 
+            else if (!pauseScreen.classList.contains('hidden')) { previousAudioContextState = 'pause'; } 
+            else { previousAudioContextState = 'defeat'; }
+            settingsScreen.classList.remove('hidden'); startMenuMusic('settings');
+        }
+
+        function closeSettings() {
+            settingsScreen.classList.add('hidden');
+            if (previousAudioContextState === 'main') startMenuMusic('main');
+            else if (previousAudioContextState === 'pause') { pauseScreen.classList.remove('hidden'); startMenuMusic('pause'); }
+            else if (previousAudioContextState === 'defeat') startMenuMusic('defeat');
+        }
+
+        function updateVolumes() {
+            volumeMusicModifier = document.getElementById('volume-music').value / 100;
+            volumeSfxModifier = document.getElementById('volume-sfx').value / 100;
+        }
+
+        function changeGraphicsQuality() {
+            currentGraphicsMode = document.getElementById('graphics-quality').value;
+        }
+
+        function resizeCanvas() { 
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight; ctx.imageSmoothingEnabled = true;
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        function exitToMainMenu() {
+            gameRunning = false; isPaused = false;
+            pauseScreen.classList.add('hidden'); uiElements.classList.add('hidden'); uiWeaponPanel.classList.add('hidden'); bossUi.classList.add('hidden');
+            
+            gearBtn.classList.remove('hidden');
+            screenBtnGroup.innerHTML = `<button id="screen-btn" onclick="startGame()">Играть</button>`;
+            
+            screen.classList.remove('hidden');
+            screenTitle.textContent = "BALL THEM UP";
+            screenTitle.style.color = "#ff4757";
+            screenDesc.innerHTML = 'Управление: WASD — движение, ПРОБЕЛ — стрельба, ESC — пауза.<br><span style="color: #ffd32a; font-weight: bold;">[R] — Перезарядка</span> | <span style="color: #54a0ff; font-weight: bold;">[LSHIFT] — Рывок</span><br>Оружие: <span style="color: #ff4757;">[1] Пистолет</span>, <span style="color: #ffa502;">[2] Дробовик</span>, <span style="color: #2ed573;">[3] Автомат</span>, <span style="color: #ff9f43;">[4] Огнемёт</span>';
+            
+            if (hasEarnedMedal) { victoryMedal.classList.remove('hidden'); }
+            
+            startMenuMusic('main');
+        }
+
+        function manualReload() {
+            if (!gameRunning || isPaused) return;
+            if (player.currentWeapon === 1 && !player.pistolReloading && player.pistolShotsLeft < player.pistolMaxAmmo) { player.pistolReloading = true; player.pistolReloadTimer = 0; updateWeaponUI(); }
+            else if (player.currentWeapon === 2 && !player.shotgunReloading && player.shotgunShotsLeft < player.shotgunMaxAmmo) { player.shotgunReloading = true; player.shotgunReloadTimer = 0; updateWeaponUI(); }
+            else if (player.currentWeapon === 3 && !player.rifleReloading && player.rifleAmmoLeft < player.rifleMaxAmmo) { player.rifleReloading = true; player.rifleReloadTimer = 0; updateWeaponUI(); }
+            else if (player.currentWeapon === 4 && player.flamerActiveTime > 0 && !player.flamerIsOverheated) { player.flamerIsOverheated = true; player.flamerCooldown = 660; updateWeaponUI(); }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Escape' && gameRunning && settingsScreen.classList.contains('hidden')) { togglePause(); return; }
+            if (e.code === 'Escape' && !settingsScreen.classList.contains('hidden')) { closeSettings(); return; }
+            if (e.code === 'Digit1') { player.currentWeapon = 1; updateWeaponUI(); return; }
+            if (e.code === 'Digit2') { player.currentWeapon = 2; updateWeaponUI(); return; }
+            if (e.code === 'Digit3') { player.currentWeapon = 3; updateWeaponUI(); return; }
+            if (e.code === 'Digit4') { player.currentWeapon = 4; updateWeaponUI(); return; }
+            if (e.code === 'KeyR') { manualReload(); return; } 
+            if (e.code in keys) { if (e.code === 'Space') e.preventDefault(); keys[e.code] = true; }
+        });
+        window.addEventListener('keyup', (e) => {
+            if (e.code in keys) { 
+                keys[e.code] = false; 
+                if (e.code === 'Space') { 
+                    canShoot = true; player.pistolHasReleased = true; 
+                    if (player.currentWeapon === 4 && player.flamerActiveTime > 0 && !player.flamerIsOverheated) { player.flamerIsOverheated = true; player.flamerCooldown = 660; }
+                } 
+            }
+        });
+        window.addEventListener('mousemove', (e) => { 
+            const rect = canvas.getBoundingClientRect(); mouse.x = (e.clientX - rect.left); mouse.y = (e.clientY - rect.top); 
+        });
+
+        window.addEventListener('DOMContentLoaded', () => { resizeCanvas(); startMenuMusic('main'); });
+
+        function togglePause() {
+            isPaused = !isPaused;
+            if (isPaused) { pauseScreen.classList.remove('hidden'); startMenuMusic('pause'); } 
+            else { pauseScreen.classList.add('hidden'); window.focus(); startMusic(); }
+        }
+
+        function updateWeaponUI() {
+            if (player.currentWeapon === 1) {
+                uiWeaponName.textContent = "Пистолет [1]"; uiWeaponName.style.color = "#ff4757"; 
+                if (player.pistolReloading) { uiWeaponAmmo.textContent = `ПЕРЕЗАРЯДКА (${Math.ceil((180 - player.pistolReloadTimer) / 60)}с)`; uiWeaponAmmo.style.color = "#ff4757"; } 
+                else { uiWeaponAmmo.textContent = `${player.pistolShotsLeft} / ${player.pistolMaxAmmo}`; uiWeaponAmmo.style.color = "#fff"; }
+            } else if (player.currentWeapon === 2) {
+                uiWeaponName.textContent = "Дробовик [2]"; uiWeaponName.style.color = "#ffa502";
+                if (player.shotgunReloading) { uiWeaponAmmo.textContent = `ПЕРЕЗАРЯДКА (${Math.ceil((300 - player.shotgunReloadTimer) / 60)}с)`; uiWeaponAmmo.style.color = "#ff4757"; } 
+                else { uiWeaponAmmo.textContent = `${player.shotgunShotsLeft} / ${player.shotgunMaxAmmo}`; uiWeaponAmmo.style.color = "#fff"; }
+            } else if (player.currentWeapon === 3) {
+                uiWeaponName.textContent = "Автомат [3]"; uiWeaponName.style.color = "#2ed573";
+                if (player.rifleReloading) { uiWeaponAmmo.textContent = `ПЕРЕЗАРЯДКА (${Math.ceil((420 - player.rifleReloadTimer) / 60)}с)`; uiWeaponAmmo.style.color = "#ff4757"; } 
+                else { uiWeaponAmmo.textContent = `${player.rifleAmmoLeft} / ${player.rifleMaxAmmo}`; uiWeaponAmmo.style.color = "#fff"; }
+            } else if (player.currentWeapon === 4) {
+                uiWeaponName.textContent = "Огнемёт [4]"; uiWeaponName.style.color = "#ff9f43";
+                if (player.flamerCooldown > 0) { uiWeaponAmmo.textContent = `ПЕРЕЗАРЯДКА (${Math.ceil(player.flamerCooldown / 60)}с)`; uiWeaponAmmo.style.color = "#ff4757"; } 
+                else { uiWeaponAmmo.textContent = `Заряд: ${((90 - player.flamerActiveTime) / 60).toFixed(1)}с`; uiWeaponAmmo.style.color = "#2ed573"; }
+            }
+        }
+
+        function spawnExplosion(x, y, color) {
+            if (currentGraphicsMode !== 'high') return; 
+            for (let i = 0; i < 15; i++) {
+                particles.push({
+                    x: x, y: y, dx: (Math.random() - 0.5) * 8, dy: (Math.random() - 0.5) * 8,
+                    radius: Math.random() * 5 + 2, alpha: 1, decay: Math.random() * 0.03 + 0.015, color: color
+                });
+            }
+        }
+
+        function startGame() {
+            initAudio(); window.focus(); currentWave = 1;
+            player.x = ARENA_SIZE / 2; player.y = ARENA_SIZE / 2; player.currentWeapon = 1; 
+            player.pistolShotsLeft = 15; player.pistolReloading = false; player.pistolCooldown = 0; player.pistolHasReleased = true;
+            player.shotgunShotsLeft = 5; player.shotgunReloading = false; player.rifleAmmoLeft = 20; player.rifleReloading = false; player.rifleFireCooldown = 0;
+            player.flamerActiveTime = 0; player.flamerCooldown = 0; player.flamerIsOverheated = false;
+            player.isDashing = false; player.dashTimer = 0; player.dashCooldown = 0;
+            
+            bullets = []; flames = []; bossBullets = []; enemyBullets = []; enemies = []; ammoDrops = []; particles = []; turrets = [];
+            canShoot = true; bossShootTimer = 0; bossShieldActive = false; bossShieldTriggered = false; bossEnraged = false; waveTransition = false; waveTransitionTimer = 0;
+            
+            bossUi.classList.add('hidden'); pauseScreen.classList.add('hidden'); uiWaveTimer.classList.add('hidden'); victoryMedal.classList.add('hidden');
+            bossStatusText.textContent = "Этап 1"; bossStatusText.style.color = "#ffd32a";
+            bossNameUi.textContent = "ХРАНИТЕЛЬ АРЕНЫ";
+            uiDash.textContent = "РЫВОК: ГОТОВ [LShift]"; uiDash.style.color = "#54a0ff";
+            
+            for (let key in keys) keys[key] = false;
+            screen.classList.add('hidden'); uiElements.classList.remove('hidden'); uiWeaponPanel.classList.remove('hidden');
+            updateWeaponUI(); startWave();
+            if (!gameRunning) { gameRunning = true; gameLoop(); }
+        }
+
+        function startWave() {
+            enemies = []; bossBullets = []; enemyBullets = []; waveTransition = false; uiWaveTimer.classList.add('hidden'); turrets = [];
+            uiWave.textContent = `Волна: ${currentWave} / 5`;
+            const count = waveConfig[currentWave];
+
+            if (currentWave === 1) { uiEnemies.textContent = `Врагов осталось: ${count}`; for (let i = 0; i < count; i++) spawnEnemy('normal'); } 
+            else if (currentWave === 2) { uiEnemies.textContent = `Врагов осталось: ${count}`; for (let i = 0; i < 2; i++) spawnEnemy('fast'); for (let i = 0; i < count - 2; i++) spawnEnemy('normal'); } 
+            else if (currentWave === 3) { uiEnemies.textContent = `Врагов осталось: ${count}`; for (let i = 0; i < 2; i++) spawnEnemy('fast'); for (let i = 0; i < 2; i++) spawnEnemy('shooter'); for (let i = 0; i < count - 4; i++) spawnEnemy('normal'); } 
+            else if (currentWave === 4) { uiEnemies.textContent = `Врагов осталось: ${count}`; for (let i = 0; i < 3; i++) spawnEnemy('fast'); for (let i = 0; i < 3; i++) spawnEnemy('shooter'); for (let i = 0; i < count - 6; i++) spawnEnemy('normal'); } 
+            else if (currentWave === 5) {
+                uiEnemies.textContent = `БОСС появился!`; bossUi.classList.remove('hidden'); bossBar.style.width = '100%';
+                spawnEnemy('boss'); bossShootTimer = 0;
+            }
+            startMusic();
+        }
+
+        function spawnEnemy(type, forcedX = null, forcedY = null) {
+            let x, y; let radius = (type === 'boss') ? 45 : 18;
+            if (forcedX !== null && forcedY !== null) { 
+                x = Math.max(radius, Math.min(ARENA_SIZE - radius, forcedX)); y = Math.max(radius, Math.min(ARENA_SIZE - radius, forcedY));
+            } else {
+                let valid = false; let attempts = 0;
+                while (!valid && attempts < 50) {
+                    x = Math.random() * (ARENA_SIZE - 100) + 50; y = Math.random() * (ARENA_SIZE - 100) + 50;
+                    if (Math.hypot(x - player.x, y - player.y) >= 250) valid = true;
+                    attempts++;
+                }
+            }
+            let config = { radius: radius, speed: 2.3, hp: 10, maxHp: 10, color: '#ffa502', isBoss: false, isShooter: false, shootCooldown: Math.random() * 30 };
+            if (type === 'fast') { config.speed = 4.6; config.hp = 5; config.maxHp = 5; config.color = '#2ed573'; } 
+            else if (type === 'shooter') { config.hp = 4; config.maxHp = 4; config.color = '#ffd32a'; config.isShooter = true; } 
+            else if (type === 'boss') { config.speed = 1.6; config.hp = 250; config.maxHp = 250; config.color = '#ff4757'; config.isBoss = true; }
+            enemies.push({ x, y, radius: config.radius, speed: config.speed, hp: config.hp, maxHp: config.maxHp, color: config.color, isBoss: config.isBoss, isShooter: config.isShooter, shootCooldown: config.shootCooldown, burnTimer: 0 });
+        }
+
+        function spawnTurrets() {
+            turrets = [
+                { x: 150, y: 150, hp: 30, maxHp: 30, radius: 35, shootTimer: 0, angle: 0 },
+                { x: ARENA_SIZE - 150, y: 150, hp: 30, maxHp: 30, radius: 35, shootTimer: 30, angle: 0 },
+                { x: 150, y: ARENA_SIZE - 150, hp: 30, maxHp: 30, radius: 35, shootTimer: 15, angle: 0 },
+                { x: ARENA_SIZE - 150, y: ARENA_SIZE - 150, hp: 30, maxHp: 30, radius: 35, shootTimer: 45, angle: 0 }
+            ];
+        }
+
+        function shoot() {
+            let color = '#ff4757';
+            if (player.currentWeapon === 1) {
+                if (player.pistolCooldown > 0 || player.pistolReloading || !player.pistolHasReleased) return;
+                playLaserSound(); player.pistolShotsLeft--; player.pistolHasReleased = false; 
+                bullets.push({ x: player.x, y: player.y, dx: Math.cos(player.angle) * 8, dy: Math.sin(player.angle) * 8, radius: 5, damage: 1, color: color, trail: [] });
+                player.pistolCooldown = 8; if (player.pistolShotsLeft <= 0) { player.pistolReloading = true; player.pistolReloadTimer = 0; }
+                updateWeaponUI();
+            } else if (player.currentWeapon === 2) {
+                if (player.shotgunReloading) return;
+                playShotgunSound(); player.shotgunShotsLeft--;
+                const totalSpread = 0.20; const angles = [player.angle - totalSpread, player.angle, player.angle + totalSpread];
+                angles.forEach(ang => { bullets.push({ x: player.x, y: player.y, dx: Math.cos(ang) * 9, dy: Math.sin(ang) * 9, radius: 5, damage: 1, color: color, trail: [] }); });
+                if (player.shotgunShotsLeft <= 0) { player.shotgunReloading = true; player.shotgunReloadTimer = 0; }
+                updateWeaponUI();
+            } else if (player.currentWeapon === 3) {
+                if (player.rifleReloading) return;
+                playRifleSound(); player.rifleAmmoLeft--;
+                bullets.push({ x: player.x, y: player.y, dx: Math.cos(player.angle) * 11, dy: Math.sin(player.angle) * 11, radius: 4, damage: 1, color: color, trail: [] });
+                if (player.rifleAmmoLeft <= 0) { player.rifleReloading = true; player.rifleReloadTimer = 0; }
+                updateWeaponUI();
+            }
+        }
+
+        function fireFlamer() {
+            if (player.flamerCooldown > 0 || player.flamerIsOverheated) return;
+            playFlameSound(); player.flamerActiveTime++;
+            for (let i = 0; i < 3; i++) {
+                let spreadAngle = player.angle + (Math.random() - 0.5) * 0.45; let speed = 5 + Math.random() * 3;
+                flames.push({ x: player.x, y: player.y, dx: Math.cos(spreadAngle) * speed, dy: Math.sin(spreadAngle) * speed, radius: 14 + Math.random() * 8, life: 25 + Math.random() * 10, maxLife: 35 });
+            }
+            if (player.flamerActiveTime >= 90) { player.flamerIsOverheated = true; player.flamerCooldown = 660; }
+            updateWeaponUI();
+        }
+
+        function bossShoot(boss) {
+            playBossLaserSound(); let angleToPlayer = Math.atan2(player.y - boss.y, player.x - boss.x);
+            bossBullets.push({ x: boss.x, y: boss.y, dx: Math.cos(angleToPlayer) * 3.5, dy: Math.sin(angleToPlayer) * 3.5, radius: 22, trail: [] });
+        }
+
+        function gameOver(victory = false) {
+            gameRunning = false; stopMusic();
+            screen.classList.remove('hidden'); bossUi.classList.add('hidden'); pauseScreen.classList.add('hidden'); uiWaveTimer.classList.add('hidden');
+            uiElements.classList.add('hidden'); uiWeaponPanel.classList.add('hidden');
+
+            if (victory) {
+                startMenuMusic('victory'); hasEarnedMedal = true;
+                gearBtn.classList.remove('hidden');
+                screenTitle.textContent = "ПОБЕДА!"; screenTitle.style.color = "#2ed573";
+                screenDesc.innerHTML = "Вы очистили арену и победили систему."; 
+                screenBtnGroup.innerHTML = `
+                    <button id="screen-btn" onclick="startGame()">Играть снова</button>
+                    <button class="secondary" style="background-color: #3d3d3d; margin-top: 5px;" onclick="exitToMainMenu()">В главное меню</button>
+                `;
+            } else {
+                startMenuMusic('defeat'); 
+                gearBtn.classList.add('hidden'); 
+                screenTitle.textContent = "ИГРА ОКОНЧЕНА"; screenTitle.style.color = "#ff4757";
+                screenDesc.innerHTML = `Вы пали смертью храбрых на ${currentWave} волне.`; 
+                screenBtnGroup.innerHTML = `
+                    <button id="screen-btn" onclick="startGame()">Попробовать снова</button>
+                    <button class="secondary" style="background-color: #3d3d3d; margin-top: 5px;" onclick="exitToMainMenu()">В главное меню</button>
+                `;
+            }
+        }
+
+        function update() {
+            if (isPaused) return;
+
+            if (waveTransition) {
+                waveTransitionTimer--;
+                if (waveTransitionTimer % 60 === 0 || waveTransitionTimer <= 0) { uiWaveTimer.textContent = `Новая волна через: ${Math.ceil(waveTransitionTimer / 60)}`; }
+                if (waveTransitionTimer <= 0) { currentWave++; startWave(); }
+            }
+
+            if (currentGraphicsMode === 'high') {
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    let p = particles[i]; p.x += p.dx; p.y += p.dy; p.alpha -= p.decay;
+                    if (p.alpha <= 0) particles.splice(i, 1);
+                }
+            }
+
+            // Оружие и кулдауны
+            if (player.flamerCooldown > 0) {
+                player.flamerCooldown--;
+                if (player.flamerCooldown % 60 === 0 || player.flamerCooldown <= 0) updateWeaponUI();
+                if (player.flamerCooldown <= 0) { player.flamerIsOverheated = false; player.flamerActiveTime = 0; updateWeaponUI(); }
+            }
+            if (player.pistolCooldown > 0) player.pistolCooldown--;
+            if (player.pistolReloading) { player.pistolReloadTimer++; if (player.pistolReloadTimer % 60 === 0 || player.pistolReloadTimer >= 180) updateWeaponUI(); if (player.pistolReloadTimer >= 180) { player.pistolReloading = false; player.pistolShotsLeft = player.pistolMaxAmmo; updateWeaponUI(); } }
+            if (player.shotgunReloading) { player.shotgunReloadTimer++; if (player.shotgunReloadTimer % 60 === 0 || player.shotgunReloadTimer >= 300) updateWeaponUI(); if (player.shotgunReloadTimer >= 300) { player.shotgunReloading = false; player.shotgunShotsLeft = player.shotgunMaxAmmo; updateWeaponUI(); } }
+            if (player.rifleReloading) { player.rifleReloadTimer++; if (player.rifleReloadTimer % 60 === 0 || player.rifleReloadTimer >= 420) updateWeaponUI(); if (player.rifleReloadTimer >= 420) { player.rifleReloading = false; player.rifleAmmoLeft = player.rifleMaxAmmo; updateWeaponUI(); } }
+
+            // Ввод
+            if (keys.Space) {
+                if (player.currentWeapon === 3 && !player.rifleReloading) { player.rifleFireCooldown++; if (player.rifleFireCooldown >= 6) { shoot(); player.rifleFireCooldown = 0; } }
+                if (player.currentWeapon === 4) { fireFlamer(); }
+            } else {
+                if (player.currentWeapon === 3) { player.rifleFireCooldown = 5; }
+                if (player.currentWeapon === 4 && player.flamerActiveTime > 0 && !player.flamerIsOverheated) { player.flamerIsOverheated = true; player.flamerCooldown = 660; updateWeaponUI(); }
+            }
+
+            let moveX = 0; let moveY = 0;
+            if (keys.KeyW) moveY -= 1; if (keys.KeyS) moveY += 1;
+            if (keys.KeyA) moveX -= 1; if (keys.KeyD) moveX += 1;
+            if (moveX !== 0 && moveY !== 0) { moveX *= 0.7071; moveY *= 0.7071; }
+
+            if (player.dashCooldown > 0) {
+                player.dashCooldown--;
+                if (player.dashCooldown <= 0) { uiDash.textContent = "РЫВОК: ГОТОВ [LShift]"; uiDash.style.color = "#54a0ff"; } 
+                else { uiDash.textContent = `РЫВОК: ОЖИДАНИЕ (${Math.ceil(player.dashCooldown / 60)}с)`; uiDash.style.color = "#ff4757"; }
+            }
+
+            if (keys.ShiftLeft && player.dashCooldown <= 0 && !player.isDashing && (moveX !== 0 || moveY !== 0)) {
+                playDashSound(); player.isDashing = true; player.dashTimer = 12; player.dashCooldown = 180; player.dashDx = moveX; player.dashDy = moveY;
+            }
+
+            if (player.isDashing) { player.x += player.dashDx * (player.speed * 3); player.y += player.dashDy * (player.speed * 3); player.dashTimer--; if (player.dashTimer <= 0) player.isDashing = false; } 
+            else { player.x += moveX * player.speed; player.y += moveY * player.speed; }
+
+            player.x = Math.max(player.radius, Math.min(ARENA_SIZE - player.radius, player.x));
+            player.y = Math.max(player.radius, Math.min(ARENA_SIZE - player.radius, player.y));
+
+            const screenCenterX = canvas.width / 2; const screenCenterY = canvas.height / 2;
+            player.angle = Math.atan2(mouse.y - screenCenterY, mouse.x - screenCenterX);
+
+            if (keys.Space && player.currentWeapon !== 3 && player.currentWeapon !== 4 && canShoot) { shoot(); canShoot = false; }
+
+            // Обновление турелей (Твердые объекты + стрельба)
+            for (let i = turrets.length - 1; i >= 0; i--) {
+                let t = turrets[i];
+                t.angle = Math.atan2(player.y - t.y, player.x - t.x);
+                
+                t.shootTimer++;
+                if (t.shootTimer >= 60) {
+                    playLaserSound(); // Можно заменить звук
+                    enemyBullets.push({ x: t.x + Math.cos(t.angle)*30, y: t.y + Math.sin(t.angle)*30, dx: Math.cos(t.angle)*6, dy: Math.sin(t.angle)*6, radius: 6, trail: [] });
+                    t.shootTimer = 0;
+                }
+
+                // Коллизия Игрок - Турель
+                let dist = Math.hypot(player.x - t.x, player.y - t.y);
+                let minDist = player.radius + t.radius;
+                if (dist < minDist && !player.isDashing) {
+                    let overlap = minDist - dist;
+                    player.x -= Math.cos(t.angle) * overlap;
+                    player.y -= Math.sin(t.angle) * overlap;
+                }
+            }
+
+            // Дроп патронов
+            for (let i = ammoDrops.length - 1; i >= 0; i--) {
+                let drop = ammoDrops[i];
+                if (Math.hypot(player.x - drop.x, player.y - drop.y) < player.radius + 8) {
+                    if (player.currentWeapon === 1) { if (player.pistolReloading) { player.pistolReloading = false; player.pistolShotsLeft = 2; } else { player.pistolShotsLeft = Math.min(player.pistolMaxAmmo, player.pistolShotsLeft + 2); } } 
+                    else if (player.currentWeapon === 2) { if (player.shotgunReloading) { player.shotgunReloading = false; player.shotgunShotsLeft = 2; } else { player.shotgunShotsLeft = Math.min(player.shotgunMaxAmmo, player.shotgunShotsLeft + 2); } } 
+                    else if (player.currentWeapon === 3) { if (player.rifleReloading) { player.rifleReloading = false; player.rifleAmmoLeft = 2; } else { player.rifleAmmoLeft = Math.min(player.rifleMaxAmmo, player.rifleAmmoLeft + 2); } }
+                    updateWeaponUI(); ammoDrops.splice(i, 1);
+                }
+            }
+
+            // Огонь
+            for (let i = flames.length - 1; i >= 0; i--) {
+                let f = flames[i]; f.x += f.dx; f.y += f.dy; f.life--;
+                if (f.life <= 0) { flames.splice(i, 1); continue; }
+                
+                // Урон турелям
+                for (let j = turrets.length - 1; j >= 0; j--) {
+                    let t = turrets[j];
+                    if (Math.hypot(f.x - t.x, f.y - t.y) < f.radius + t.radius) {
+                        t.hp -= 0.1; // Огнемет наносит постепенный урон
+                        if (t.hp <= 0) { spawnExplosion(t.x, t.y, '#fff'); turrets.splice(j, 1); }
+                    }
+                }
+
+                for (let j = enemies.length - 1; j >= 0; j--) {
+                    let e = enemies[j];
+                    if (Math.hypot(f.x - e.x, f.y - e.y) < f.radius + e.radius) {
+                        if (e.isBoss && bossShieldActive) continue;
+                        e.burnTimer = 240; 
+                    }
+                }
+            }
+
+            // Пули игрока
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                let b = bullets[i]; b.x += b.dx; b.y += b.dy;
+                if (currentGraphicsMode === 'high' && b.trail) { b.trail.push({x: b.x, y: b.y}); if(b.trail.length > 5) b.trail.shift(); }
+                if (b.x < 0 || b.x > ARENA_SIZE || b.y < 0 || b.y > ARENA_SIZE) { bullets.splice(i, 1); continue; }
+
+                let hitSomething = false;
+                
+                // Урон турелям
+                for (let j = turrets.length - 1; j >= 0; j--) {
+                    let t = turrets[j];
+                    if (Math.hypot(b.x - t.x, b.y - t.y) < b.radius + t.radius) {
+                        t.hp -= b.damage;
+                        bullets.splice(i, 1); hitSomething = true;
+                        if (t.hp <= 0) { spawnExplosion(t.x, t.y, '#aaa'); turrets.splice(j, 1); }
+                        break;
+                    }
+                }
+                if (hitSomething) continue;
+
+                // Урон врагам
+                for (let j = enemies.length - 1; j >= 0; j--) {
+                    let e = enemies[j]; let dist = Math.hypot(b.x - e.x, b.y - e.y);
+                    if (dist < b.radius + e.radius) {
+                        if (e.isBoss && bossShieldActive) { bullets.splice(i, 1); break; }
+                        e.hp -= b.damage; bullets.splice(i, 1);
+                        if (e.isBoss) {
+                            bossBar.style.width = `${(e.hp / e.maxHp) * 100}%`;
+                            // Триггер щита на 50%
+                            if (e.hp <= e.maxHp / 2 && !bossShieldTriggered) { 
+                                bossShieldActive = true; bossShieldTriggered = true; 
+                                bossStatusText.textContent = "УНИЧТОЖЬТЕ ТУРЕЛИ!"; bossStatusText.style.color = "#0abde3"; 
+                                spawnTurrets();
+                            }
+                        }
+                        if (e.hp <= 0) {
+                            spawnExplosion(e.x, e.y, e.color);
+                            ammoDrops.push({ x: e.x, y: e.y }); enemies.splice(j, 1);
+                            if (currentWave < 5 && !waveTransition) uiEnemies.textContent = `Врагов осталось: ${enemies.length}`;
+                        }
+                        break;
+                    }
+                }
+            }
+
+            // Щит босса спадает если турелей нет
+            if (bossShieldActive && turrets.length === 0) {
+                bossShieldActive = false;
+                bossEnraged = true;
+                bossNameUi.textContent = "РАЗЪЯРЕННЫЙ ХРАНИТЕЛЬ";
+                bossStatusText.textContent = "ФАЗА ЯРОСТИ!";
+                bossStatusText.style.color = "#ff4757";
+                let boss = enemies.find(e => e.isBoss);
+                if (boss) boss.speed = 3.5;
+            }
+
+            // Вражеские пули
+            if (!player.isDashing) {
+                for (let i = bossBullets.length - 1; i >= 0; i--) {
+                    let bb = bossBullets[i]; bb.x += bb.dx; bb.y += bb.dy;
+                    if (currentGraphicsMode === 'high' && bb.trail) { bb.trail.push({x: bb.x, y: bb.y}); if(bb.trail.length > 8) bb.trail.shift(); }
+                    if (bb.x < bb.radius || bb.x > ARENA_SIZE - bb.radius || bb.y < bb.radius || bb.y > ARENA_SIZE - bb.radius) {
+                        if (bossEnraged) { const subAngles = [0, Math.PI / 2, Math.PI, Math.PI * 1.5]; subAngles.forEach(ang => { enemyBullets.push({ x: Math.max(10, Math.min(ARENA_SIZE - 10, bb.x)), y: Math.max(10, Math.min(ARENA_SIZE - 10, bb.y)), dx: Math.cos(ang) * 4.5, dy: Math.sin(ang) * 4.5, radius: 6, trail: [] }); }); }
+                        bossBullets.splice(i, 1); continue;
+                    }
+                    if (Math.hypot(player.x - bb.x, player.y - bb.y) < player.radius + bb.radius) { gameOver(false); return; }
+                }
+                for (let i = enemyBullets.length - 1; i >= 0; i--) {
+                    let eb = enemyBullets[i]; eb.x += eb.dx; eb.y += eb.dy;
+                    if (currentGraphicsMode === 'high' && eb.trail) { eb.trail.push({x: eb.x, y: eb.y}); if(eb.trail.length > 5) eb.trail.shift(); }
+                    if (eb.x < 0 || eb.x > ARENA_SIZE || eb.y < 0 || eb.y > ARENA_SIZE) { enemyBullets.splice(i, 1); continue; }
+                    if (Math.hypot(player.x - eb.x, player.y - eb.y) < player.radius + eb.radius) { gameOver(false); return; }
+                }
+            }
+
+            // Поведение врагов
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                let e = enemies[i]; 
+                let distToPlayer = Math.hypot(player.x - e.x, player.y - e.y); 
+                let angleToPlayer = Math.atan2(player.y - e.y, player.x - e.x);
+                
+                if (e.burnTimer > 0) {
+                    e.burnTimer--;
+                    if (e.burnTimer % 60 === 0) {
+                        e.hp -= 1;
+                        if (e.isBoss) { bossBar.style.width = `${(e.hp / e.maxHp) * 100}%`; }
+                        if (e.hp <= 0) {
+                            spawnExplosion(e.x, e.y, '#ff9f43'); ammoDrops.push({ x: e.x, y: e.y }); enemies.splice(i, 1);
+                            if (currentWave < 5 && !waveTransition) uiEnemies.textContent = `Врагов осталось: ${enemies.length}`;
+                            continue;
+                        }
+                    }
+                }
+
+                if (e.isBoss) {
+                    if (!bossShieldActive) {
+                        e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed; bossShootTimer++;
+                        let currentFireRate = bossEnraged ? 60 : 120; if (bossShootTimer >= currentFireRate) { bossShoot(e); bossShootTimer = 0; }
+                    }
+                } else if (e.isShooter) {
+                    if (distToPlayer > 280) { e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed; } 
+                    else if (distToPlayer < 220) { e.x -= Math.cos(angleToPlayer) * e.speed; e.y -= Math.sin(angleToPlayer) * e.speed; }
+                    
+                    e.x = Math.max(e.radius, Math.min(ARENA_SIZE - e.radius, e.x)); e.y = Math.max(e.radius, Math.min(ARENA_SIZE - e.radius, e.y)); 
+                    
+                    e.shootCooldown++; if (e.shootCooldown >= 60) { enemyBullets.push({ x: e.x, y: e.y, dx: Math.cos(angleToPlayer) * 5, dy: Math.sin(angleToPlayer) * 5, radius: 5.5, trail: [] }); e.shootCooldown = 0; }
+                } else { e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed; }
+
+                // Коллизия врагов с турелями
+                for (let t of turrets) {
+                    let d = Math.hypot(e.x - t.x, e.y - t.y);
+                    let mD = e.radius + t.radius;
+                    if (d < mD) {
+                        let ov = mD - d;
+                        let ang = Math.atan2(e.y - t.y, e.x - t.x);
+                        e.x += Math.cos(ang) * ov;
+                        e.y += Math.sin(ang) * ov;
+                    }
+                }
+
+                if (!player.isDashing && distToPlayer < player.radius + e.radius && (!e.isBoss || !bossShieldActive)) { gameOver(false); return; }
+            }
+
+            if (enemies.length === 0 && !waveTransition) {
+                if (currentWave < 5) { waveTransition = true; waveTransitionTimer = 180; uiWaveTimer.classList.remove('hidden'); uiWaveTimer.textContent = `Новая волна через: 3`; uiEnemies.textContent = `Волна зачищена!`; } 
+                else { gameOver(true); }
+            }
+        }
+
+        function drawShape(isRetro, x, y, radius) {
+            if (isRetro) { ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2); } 
+            else { ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill(); }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(canvas.width / 2, canvas.height / 2); ctx.scale(0.8, 0.8); ctx.translate(-player.x, -player.y);
+
+            const isRetro = (currentGraphicsMode === 'pixel');
+
+            // Арена
+            ctx.strokeStyle = '#444'; ctx.lineWidth = 10; ctx.strokeRect(0, 0, ARENA_SIZE, ARENA_SIZE);
+            ctx.strokeStyle = '#222'; ctx.lineWidth = 2;
+            for (let x = 0; x <= ARENA_SIZE; x += 60) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, ARENA_SIZE); ctx.stroke(); }
+            for (let y = 0; y <= ARENA_SIZE; y += 60) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(ARENA_SIZE, y); ctx.stroke(); }
+
+            // Дроп
+            ctx.fillStyle = '#00d2d3'; ammoDrops.forEach(drop => { ctx.fillRect(drop.x - 7, drop.y - 7, 14, 14); });
+
+            // Турели
+            turrets.forEach(t => {
+                ctx.save();
+                ctx.translate(t.x, t.y);
+                // Основание (квадрат)
+                ctx.fillStyle = '#2f3542';
+                ctx.fillRect(-35, -35, 70, 70);
+                // Вращение дула к игроку
+                ctx.rotate(t.angle);
+                // Дуло (прямоугольник)
+                ctx.fillStyle = '#57606f';
+                ctx.fillRect(15, -8, 25, 16);
+                // Башня (круг)
+                ctx.fillStyle = '#4b6584';
+                ctx.beginPath(); ctx.arc(0, 0, 22, 0, Math.PI * 2); ctx.fill();
+                
+                // Полоса ХП
+                ctx.rotate(-t.angle);
+                ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(-30, -50, 60, 6);
+                ctx.fillStyle = '#ff4757'; ctx.fillRect(-30, -50, 60 * (t.hp / t.maxHp), 6);
+                ctx.restore();
+            });
+
+            // Частицы
+            if (currentGraphicsMode === 'high') { particles.forEach(p => { ctx.save(); ctx.globalAlpha = p.alpha; ctx.fillStyle = p.color; ctx.shadowBlur = 10; ctx.shadowColor = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }); }
+
+            // Огонь
+            flames.forEach(f => { ctx.save(); ctx.globalAlpha = (f.life / f.maxLife) * 0.45; ctx.fillStyle = Math.random() > 0.5 ? '#ff9f43' : '#ff4d4d'; drawShape(isRetro, f.x, f.y, f.radius); ctx.restore(); });
+
+            // Пули игрока
+            ctx.fillStyle = '#ff4757'; 
+            bullets.forEach(b => {
+                if (currentGraphicsMode === 'high' && b.trail) { ctx.beginPath(); ctx.strokeStyle = b.color; ctx.lineWidth = b.radius * 0.7; ctx.globalAlpha = 0.3; for(let t=0; t<b.trail.length; t++) { if(t===0) ctx.moveTo(b.trail[t].x, b.trail[t].y); else ctx.lineTo(b.trail[t].x, b.trail[t].y); } ctx.stroke(); ctx.globalAlpha = 1; }
+                drawShape(isRetro, b.x, b.y, b.radius);
+            });
+
+            // Пули врагов
+            ctx.fillStyle = '#ffd32a'; 
+            enemyBullets.forEach(eb => {
+                if (currentGraphicsMode === 'high' && eb.trail) { ctx.beginPath(); ctx.strokeStyle = '#ffd32a'; ctx.lineWidth = eb.radius * 0.6; ctx.globalAlpha = 0.25; for(let t=0; t<eb.trail.length; t++) { if(t===0) ctx.moveTo(eb.trail[t].x, eb.trail[t].y); else ctx.lineTo(eb.trail[t].x, eb.trail[t].y); } ctx.stroke(); ctx.globalAlpha = 1; }
+                drawShape(isRetro, eb.x, eb.y, eb.radius);
+            });
+
+            // Пули босса
+            bossBullets.forEach(bb => {
+                if (currentGraphicsMode === 'high') { ctx.save(); if (bb.trail) { ctx.beginPath(); ctx.strokeStyle = 'rgba(255, 71, 87, 0.4)'; ctx.lineWidth = bb.radius * 0.8; for(let t=0; t<bb.trail.length; t++) { if(t===0) ctx.moveTo(bb.trail[t].x, bb.trail[t].y); else ctx.lineTo(bb.trail[t].x, bb.trail[t].y); } ctx.stroke(); } ctx.shadowBlur = 30; ctx.shadowColor = '#ff4757'; }
+                ctx.fillStyle = '#ff3838'; drawShape(isRetro, bb.x, bb.y, bb.radius);
+                if (currentGraphicsMode === 'high') ctx.restore();
+            });
+
+            // Враги и Босс
+            enemies.forEach(e => {
+                ctx.save();
+                if (e.isBoss && currentGraphicsMode === 'high') { ctx.shadowBlur = 40; ctx.shadowColor = '#ff4757'; }
+                if (e.burnTimer > 0) { ctx.fillStyle = (Math.floor(e.burnTimer / 4) % 2 === 0) ? '#ff9f43' : '#e67e22'; } else { ctx.fillStyle = e.color; }
+                drawShape(isRetro, e.x, e.y, e.radius);
+                ctx.restore();
+
+                if (bossShieldActive && e.isBoss) {
+                    ctx.save(); ctx.strokeStyle = '#0abde3'; ctx.lineWidth = 4; 
+                    if (currentGraphicsMode === 'high') { ctx.shadowBlur = 30; ctx.shadowColor = '#0abde3'; }
+                    ctx.fillStyle = 'rgba(10, 189, 227, 0.15)'; 
+                    if (isRetro) { ctx.fillRect(e.x - (e.radius + 25), e.y - (e.radius + 25), (e.radius + 25) * 2, (e.radius + 25) * 2); ctx.strokeRect(e.x - (e.radius + 25), e.y - (e.radius + 25), (e.radius + 25) * 2, (e.radius + 25) * 2); } 
+                    else { ctx.beginPath(); ctx.arc(e.x, e.y, e.radius + 25, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
+                    ctx.restore();
+                }
+                if (e.hp < e.maxHp && !e.isBoss) {
+                    const barWidth = e.radius * 2; const barHeight = 6;
+                    ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(e.x - e.radius, e.y - e.radius - 15, barWidth, barHeight);
+                    ctx.fillStyle = '#2ed573'; ctx.fillRect(e.x - e.radius, e.y - e.radius - 15, barWidth * (e.hp / e.maxHp), barHeight);
+                }
+            });
+
+            // Игрок
+            ctx.save(); ctx.translate(player.x, player.y); ctx.rotate(player.angle);
+            if (player.currentWeapon === 1) { ctx.fillStyle = '#7f8c8d'; ctx.fillRect(15, -4, 15, 8); } 
+            else if (player.currentWeapon === 2) { ctx.fillStyle = '#d2dae2'; ctx.fillRect(14, -7, 18, 14); } 
+            else if (player.currentWeapon === 3) { ctx.fillStyle = '#57606f'; ctx.fillRect(15, -5, 23, 10); }
+            else if (player.currentWeapon === 4) { ctx.fillStyle = '#e67e22'; ctx.fillRect(13, -6, 20, 12); } 
+
+            if (player.isDashing) { ctx.fillStyle = '#54a0ff'; if (currentGraphicsMode === 'high') { ctx.save(); ctx.shadowBlur = 25; ctx.shadowColor = '#54a0ff'; } } 
+            else { ctx.fillStyle = '#0abde3'; }
+            
+            if (isRetro) { ctx.fillRect(-player.radius, -player.radius, player.radius * 2, player.radius * 2); } 
+            else { ctx.beginPath(); ctx.arc(0, 0, player.radius, 0, Math.PI * 2); ctx.fill(); }
+            
+            if (player.isDashing && currentGraphicsMode === 'high') ctx.restore();
+            ctx.restore(); 
+            ctx.restore();
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+            update(); draw(); requestAnimationFrame(gameLoop);
+        }
+    </script>
+</body>
+</html>
