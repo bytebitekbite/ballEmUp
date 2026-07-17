@@ -321,7 +321,7 @@
             touch-action: none;
         }
         #touch-dash {
-            left: 77px; /* Центрирование над левым джойстиком */
+            left: 77px; 
             bottom: 185px;
             background-color: rgba(0, 168, 255, 0.75);
             border: 2px solid rgba(255,255,255,0.4);
@@ -330,13 +330,23 @@
             background-color: rgba(0, 168, 255, 0.95);
         }
         #touch-shoot {
-            right: 77px; /* Центрирование над правым джойстиком */
+            right: 77px; 
             bottom: 185px;
             background-color: rgba(255, 71, 87, 0.75);
             border: 2px solid rgba(255,255,255,0.4);
         }
         #touch-shoot:active {
             background-color: rgba(255, 71, 87, 0.95);
+        }
+        #touch-reload {
+            right: 77px; 
+            bottom: 250px;
+            background-color: rgba(255, 211, 42, 0.75);
+            border: 2px solid rgba(255,255,255,0.4);
+            color: #333;
+        }
+        #touch-reload:active {
+            background-color: rgba(255, 211, 42, 0.95);
         }
         #touch-weapons-container {
             position: absolute;
@@ -351,7 +361,7 @@
         .touch-weap-btn {
             width: 50px;
             height: 50px;
-            border-radius: 8px;
+            border-radius: 0; /* Строго квадратные */
             border: 3px solid rgba(255, 255, 255, 0.4);
             color: white;
             font-weight: bold;
@@ -393,17 +403,21 @@
 
     <!-- Мобильное управление -->
     <div id="touch-controls" class="hidden">
+        <!-- Левый джойстик (Ходьба - Синий) -->
         <div id="joystick-left-zone" class="joystick-zone">
             <div class="joystick-knob"></div>
         </div>
         <button id="touch-dash" class="touch-action-btn">Рывок</button>
         
+        <!-- Правый джойстик (Прицеливание - Красный) -->
         <div id="joystick-right-zone" class="joystick-zone">
             <div class="joystick-knob"></div>
         </div>
         <button id="touch-shoot" class="touch-action-btn">Огонь</button>
+        <button id="touch-reload" class="touch-action-btn">Перез.</button>
         
-        <div id="touch-weapons-container" class="hidden">
+        <!-- Выбор оружия (Квадратные) -->
+        <div id="touch-weapons-container">
             <button id="weap-btn-1" class="touch-weap-btn" style="background-color: #ff4757;" onclick="selectWeapon(1)">1</button>
             <button id="weap-btn-2" class="touch-weap-btn" style="background-color: #ffa502;" onclick="selectWeapon(2)">2</button>
             <button id="weap-btn-3" class="touch-weap-btn" style="background-color: #2ed573;" onclick="selectWeapon(3)">3</button>
@@ -679,15 +693,12 @@
 
         function toggleTouchControlsVisibility() {
             const touchControls = document.getElementById('touch-controls');
-            const touchWeapons = document.getElementById('touch-weapons-container');
             
             if (gameRunning && !isPaused && controlType === 'mobile') {
                 touchControls.classList.remove('hidden');
-                touchWeapons.classList.remove('hidden');
                 updateTouchWeaponButtons();
             } else {
                 touchControls.classList.add('hidden');
-                touchWeapons.classList.add('hidden');
             }
         }
 
@@ -847,8 +858,10 @@
             if (player.isInvincible) cheatIndicator.classList.remove('hidden');
 
             updateWeaponUI(); startWave();
-            toggleTouchControlsVisibility();
+            
             if (!gameRunning) { gameRunning = true; gameLoop(); }
+            // Теперь игра технически запущена, и кнопки отобразятся корректно
+            toggleTouchControlsVisibility();
         }
 
         function startWave() {
@@ -963,7 +976,7 @@
             }
         }
 
-        // --- Инициализация тач-событий (Джойстики / Ползунки) ---
+        // --- Инициализация тач-событий (Джойстики / Ползунки / Кнопки) ---
         function initTouchEvents() {
             const joyLeftZone = document.getElementById('joystick-left-zone');
             const joyLeftKnob = joyLeftZone.querySelector('.joystick-knob');
@@ -1098,6 +1111,13 @@
 
             shootBtn.addEventListener('touchend', stopTouchShoot, { passive: false });
             shootBtn.addEventListener('touchcancel', stopTouchShoot, { passive: false });
+            
+            // Тач Кнопка Перезарядки
+            const reloadBtn = document.getElementById('touch-reload');
+            reloadBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                manualReload();
+            }, { passive: false });
         }
 
         function triggerTouchDash() {
