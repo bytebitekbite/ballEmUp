@@ -62,6 +62,22 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
             z-index: 5;
         }
+        #cheat-indicator {
+            position: absolute;
+            bottom: 85px;
+            left: 20px;
+            color: #ffd32a;
+            font-size: 16px;
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(255, 211, 42, 0.8);
+            z-index: 5;
+            letter-spacing: 1px;
+            animation: pulse-glow 1s infinite alternate;
+        }
+        @keyframes pulse-glow {
+            0% { opacity: 0.8; text-shadow: 0 0 5px #ffd32a; }
+            100% { opacity: 1; text-shadow: 0 0 20px #fff, 0 0 10px #ffd32a; }
+        }
         #boss-ui {
             position: absolute;
             top: 20px;
@@ -187,18 +203,23 @@
         button.small-gear:hover {
             background-color: #57606f;
         }
+        
+        /* Вращение и сияние медали */
         #victory-medal {
             position: absolute;
             top: 20px;
             right: 90px;
-            font-size: 40px;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-            animation: pulse 2s infinite alternate;
+            font-size: 45px;
+            display: inline-block;
+            transform-style: preserve-3d;
+            animation: medal-spin 3s linear infinite;
         }
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.1); opacity: 1; }
+        @keyframes medal-spin {
+            0% { transform: perspective(400px) rotateY(0deg); text-shadow: 0 0 10px rgba(255, 215, 0, 0.8); }
+            50% { transform: perspective(400px) rotateY(180deg); text-shadow: 0 0 35px rgba(255, 255, 255, 1), 0 0 25px rgba(255, 215, 0, 1); }
+            100% { transform: perspective(400px) rotateY(360deg); text-shadow: 0 0 10px rgba(255, 215, 0, 0.8); }
         }
+
         .setting-row {
             display: flex;
             justify-content: space-between;
@@ -231,6 +252,119 @@
             font-weight: bold;
             text-transform: uppercase;
         }
+
+        /* --- СЕНСОРНОЕ УПРАВЛЕНИЕ (ТЕЛЕФОН) --- */
+        #touch-controls {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 6;
+        }
+        .joystick-zone {
+            position: absolute;
+            bottom: 40px;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            pointer-events: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: none;
+        }
+        #joystick-left-zone {
+            left: 40px;
+            background: rgba(0, 168, 255, 0.15);
+            border: 3px dashed rgba(0, 168, 255, 0.4);
+            box-shadow: 0 0 15px rgba(0, 168, 255, 0.2);
+        }
+        #joystick-right-zone {
+            right: 40px;
+            background: rgba(255, 71, 87, 0.15);
+            border: 3px dashed rgba(255, 71, 87, 0.4);
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.2);
+        }
+        .joystick-knob {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            pointer-events: none;
+            transition: transform 0.05s linear;
+        }
+        #joystick-left-zone .joystick-knob {
+            background: rgba(0, 168, 255, 0.6);
+            box-shadow: 0 0 10px rgba(0, 168, 255, 0.5);
+        }
+        #joystick-right-zone .joystick-knob {
+            background: rgba(255, 71, 87, 0.6);
+            box-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+        }
+        .touch-action-btn {
+            position: absolute;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-weight: bold;
+            font-size: 10px;
+            pointer-events: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-transform: uppercase;
+            touch-action: none;
+        }
+        #touch-dash {
+            left: 77px; /* Центрирование над левым джойстиком */
+            bottom: 185px;
+            background-color: rgba(0, 168, 255, 0.75);
+            border: 2px solid rgba(255,255,255,0.4);
+        }
+        #touch-dash:active {
+            background-color: rgba(0, 168, 255, 0.95);
+        }
+        #touch-shoot {
+            right: 77px; /* Центрирование над правым джойстиком */
+            bottom: 185px;
+            background-color: rgba(255, 71, 87, 0.75);
+            border: 2px solid rgba(255,255,255,0.4);
+        }
+        #touch-shoot:active {
+            background-color: rgba(255, 71, 87, 0.95);
+        }
+        #touch-weapons-container {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            pointer-events: auto;
+            z-index: 7;
+        }
+        .touch-weap-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.1s, border-color 0.1s;
+            touch-action: none;
+        }
+        .touch-weap-btn.active {
+            border-color: #ffffff !important;
+            transform: scale(1.15);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
     </style>
 </head>
 <body>
@@ -241,6 +375,8 @@
         <div id="wave-timer" class="hidden">Новая волна через: 3</div>
         <div id="dash-ui">РЫВОК: ГОТОВ [LShift]</div>
     </div>
+
+    <div id="cheat-indicator" class="hidden">РЕЖИМ БОГА АКТИВИРОВАН</div>
 
     <div id="weapon-ui" class="hidden">
         Оружие: <span id="weapon-name" style="color: #ff4757; font-weight: bold;">Пистолет [1]</span><br>
@@ -253,6 +389,26 @@
             <div id="boss-bar"></div>
         </div>
         <div id="boss-status">Этап 1</div>
+    </div>
+
+    <!-- Мобильное управление -->
+    <div id="touch-controls" class="hidden">
+        <div id="joystick-left-zone" class="joystick-zone">
+            <div class="joystick-knob"></div>
+        </div>
+        <button id="touch-dash" class="touch-action-btn">Рывок</button>
+        
+        <div id="joystick-right-zone" class="joystick-zone">
+            <div class="joystick-knob"></div>
+        </div>
+        <button id="touch-shoot" class="touch-action-btn">Огонь</button>
+        
+        <div id="touch-weapons-container" class="hidden">
+            <button id="weap-btn-1" class="touch-weap-btn" style="background-color: #ff4757;" onclick="selectWeapon(1)">1</button>
+            <button id="weap-btn-2" class="touch-weap-btn" style="background-color: #ffa502;" onclick="selectWeapon(2)">2</button>
+            <button id="weap-btn-3" class="touch-weap-btn" style="background-color: #2ed573;" onclick="selectWeapon(3)">3</button>
+            <button id="weap-btn-4" class="touch-weap-btn" style="background-color: #ff9f43;" onclick="selectWeapon(4)">4</button>
+        </div>
     </div>
 
     <div id="screen">
@@ -284,8 +440,15 @@
         <div class="menu-box" style="min-width: 360px;">
             <h2 style="color: #ff4757; margin: 0 0 10px 0; text-transform: uppercase;">Настройки</h2>
             <div class="setting-row">
+                <label>Управление</label>
+                <select id="control-type" onchange="changeControlType()">
+                    <option value="pc" selected>Клавиатура + Мышь</option>
+                    <option value="mobile">Сенсорный экран</option>
+                </select>
+            </div>
+            <div class="setting-row">
                 <label>Громкость музыки</label>
-                <input type="range" id="volume-music" min="0" max="100" value="70" oninput="updateVolumes()">
+                <input type="range" id="volume-music" min="0" max="100" value="100" oninput="updateVolumes()">
             </div>
             <div class="setting-row">
                 <label>Громкость эффектов</label>
@@ -333,6 +496,7 @@
         const pauseScreen = document.getElementById('pause-screen');
         const settingsScreen = document.getElementById('settings-screen');
         const victoryMedal = document.getElementById('victory-medal');
+        const cheatIndicator = document.getElementById('cheat-indicator');
 
         let gameRunning = false;
         let isPaused = false; 
@@ -340,11 +504,20 @@
         const waveConfig = { 1: 3, 2: 4, 3: 7, 4: 10, 5: 1 }; 
         const ARENA_SIZE = 1200; 
 
-        let volumeMusicModifier = 0.7;
+        let volumeMusicModifier = 1.0; 
         let volumeSfxModifier = 0.6;
         let currentGraphicsMode = 'medium'; 
         let previousAudioContextState = 'main';
         let hasEarnedMedal = false;
+
+        // Переменные сенсорного управления
+        let controlType = 'pc';
+        let touchLeftId = null;
+        let touchRightId = null;
+        let joyLeftStart = { x: 0, y: 0 };
+        let joyRightStart = { x: 0, y: 0 };
+        let joyLeftVector = { x: 0, y: 0 };
+        let joyRightVector = { x: 0, y: 0 };
 
         const player = {
             x: ARENA_SIZE / 2, y: ARENA_SIZE / 2, radius: 20, speed: 4, angle: 0, currentWeapon: 1, 
@@ -352,7 +525,8 @@
             pistolMaxAmmo: 15, pistolShotsLeft: 15, pistolReloading: false, pistolReloadTimer: 0, pistolCooldown: 0, pistolHasReleased: true,
             shotgunMaxAmmo: 5, shotgunShotsLeft: 5, shotgunReloading: false, shotgunReloadTimer: 0,
             rifleMaxAmmo: 20, rifleAmmoLeft: 20, rifleReloading: false, rifleReloadTimer: 0, rifleFireCooldown: 0,
-            flamerActiveTime: 0, flamerCooldown: 0, flamerIsOverheated: false  
+            flamerActiveTime: 0, flamerCooldown: 0, flamerIsOverheated: false,
+            isInvincible: false
         };
 
         let bullets = []; let flames = []; let bossBullets = []; let enemyBullets = []; let enemies = []; 
@@ -366,6 +540,9 @@
         let bossShieldActive = false; let bossShieldTriggered = false; let bossEnraged = false; 
 
         let audioCtx = null; let musicInterval = null; let menuMusicInterval = null; let musicStep = 0; let currentActiveMusicType = null;
+
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+        let konamiIndex = 0;
 
         function initAudio() {
             if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
@@ -391,34 +568,22 @@
                 osc.connect(gain); gain.connect(audioCtx.destination);
                 
                 if (type === 'main' || type === 'settings') {
-                    // Завывающая, мрачная, но красочная
-                    speed = 400;
-                    osc.type = 'sine';
-                    // Плавное изменение частоты для эффекта завывания
-                    let baseFreq = 164.81; // E3
-                    let colorfulNotes = [246.94, 329.63, 220.00]; // B3, E4, A3
+                    speed = 400; osc.type = 'sine';
+                    let baseFreq = 164.81; let colorfulNotes = [246.94, 329.63, 220.00]; 
                     let currentNote = (step % 4 === 0) ? colorfulNotes[(step/4) % colorfulNotes.length] : baseFreq;
-                    
                     osc.frequency.setValueAtTime(currentNote, audioCtx.currentTime);
                     osc.frequency.linearRampToValueAtTime(currentNote + (Math.sin(step)*10), audioCtx.currentTime + 0.3);
-                    
                     gain.gain.setValueAtTime(0.12 * volumeMusicModifier, audioCtx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
                 } 
                 else if (type === 'victory') {
-                    // Медленные, зацикленные, торжественные фанфары
-                    speed = 600;
-                    const heroicChords = [261.63, 329.63, 392.00, 523.25]; // C Major Arp
-                    osc.type = 'square';
-                    let note = heroicChords[step % heroicChords.length];
-                    
+                    speed = 600; const heroicChords = [261.63, 329.63, 392.00, 523.25]; 
+                    osc.type = 'square'; let note = heroicChords[step % heroicChords.length];
                     osc.frequency.setValueAtTime(note, audioCtx.currentTime);
                     
-                    // Дополнительный слой (гармония)
                     let osc2 = audioCtx.createOscillator(); let gain2 = audioCtx.createGain();
                     osc2.connect(gain2); gain2.connect(audioCtx.destination);
-                    osc2.type = 'sawtooth';
-                    osc2.frequency.setValueAtTime(note / 2, audioCtx.currentTime);
+                    osc2.type = 'sawtooth'; osc2.frequency.setValueAtTime(note / 2, audioCtx.currentTime);
                     gain2.gain.setValueAtTime(0.08 * volumeMusicModifier, audioCtx.currentTime);
                     gain2.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
                     osc2.start(); osc2.stop(audioCtx.currentTime + 0.5);
@@ -427,17 +592,13 @@
                     gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
                 }
                 else if (type === 'defeat') {
-                    speed = 380;
-                    osc.type = 'sine';
-                    let notes = [146.83, 130.81];
+                    speed = 380; osc.type = 'sine'; let notes = [146.83, 130.81];
                     osc.frequency.setValueAtTime(notes[step % notes.length], audioCtx.currentTime);
                     gain.gain.setValueAtTime(0.11 * volumeMusicModifier, audioCtx.currentTime);
                     gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
                 }
                 else if (type === 'pause') {
-                    speed = 450;
-                    osc.type = 'triangle';
-                    let notes = [220, 261, 329];
+                    speed = 450; osc.type = 'triangle'; let notes = [220, 261, 329];
                     osc.frequency.setValueAtTime(notes[step % notes.length], audioCtx.currentTime);
                     gain.gain.setValueAtTime(0.08 * volumeMusicModifier, audioCtx.currentTime);
                     gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
@@ -466,10 +627,8 @@
                 osc.connect(gain); gain.connect(audioCtx.destination);
                 
                 if (currentWave === 5) {
-                    // Тяжелый рок: быстрый ритм, низкие пилообразные волны
-                    const rockBass = [41.20, 41.20, 41.20, 55.00, 41.20, 61.74]; // E1, G1, B1
-                    osc.type = 'sawtooth';
-                    let note = rockBass[musicStep % rockBass.length];
+                    const rockBass = [41.20, 41.20, 41.20, 55.00, 41.20, 61.74]; 
+                    osc.type = 'sawtooth'; let note = rockBass[musicStep % rockBass.length];
                     osc.frequency.setValueAtTime(note, audioCtx.currentTime);
                     gain.gain.setValueAtTime((musicStep % 2 === 0 ? 0.25 : 0.15) * volumeMusicModifier, audioCtx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
@@ -513,6 +672,44 @@
             currentGraphicsMode = document.getElementById('graphics-quality').value;
         }
 
+        function changeControlType() {
+            controlType = document.getElementById('control-type').value;
+            toggleTouchControlsVisibility();
+        }
+
+        function toggleTouchControlsVisibility() {
+            const touchControls = document.getElementById('touch-controls');
+            const touchWeapons = document.getElementById('touch-weapons-container');
+            
+            if (gameRunning && !isPaused && controlType === 'mobile') {
+                touchControls.classList.remove('hidden');
+                touchWeapons.classList.remove('hidden');
+                updateTouchWeaponButtons();
+            } else {
+                touchControls.classList.add('hidden');
+                touchWeapons.classList.add('hidden');
+            }
+        }
+
+        function selectWeapon(num) {
+            player.currentWeapon = num;
+            updateWeaponUI();
+            updateTouchWeaponButtons();
+        }
+
+        function updateTouchWeaponButtons() {
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById(`weap-btn-${i}`);
+                if (btn) {
+                    if (player.currentWeapon === i) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                }
+            }
+        }
+
         function resizeCanvas() { 
             canvas.width = window.innerWidth; canvas.height = window.innerHeight; ctx.imageSmoothingEnabled = true;
         }
@@ -521,6 +718,7 @@
         function exitToMainMenu() {
             gameRunning = false; isPaused = false;
             pauseScreen.classList.add('hidden'); uiElements.classList.add('hidden'); uiWeaponPanel.classList.add('hidden'); bossUi.classList.add('hidden');
+            cheatIndicator.classList.add('hidden');
             
             gearBtn.classList.remove('hidden');
             screenBtnGroup.innerHTML = `<button id="screen-btn" onclick="startGame()">Играть</button>`;
@@ -532,6 +730,7 @@
             
             if (hasEarnedMedal) { victoryMedal.classList.remove('hidden'); }
             
+            toggleTouchControlsVisibility();
             startMenuMusic('main');
         }
 
@@ -544,12 +743,28 @@
         }
 
         window.addEventListener('keydown', (e) => {
+            if (e.code === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    player.isInvincible = !player.isInvincible;
+                    konamiIndex = 0;
+                    if (player.isInvincible) {
+                        cheatIndicator.classList.remove('hidden');
+                        playDashSound(); 
+                    } else {
+                        cheatIndicator.classList.add('hidden');
+                    }
+                }
+            } else {
+                konamiIndex = 0;
+            }
+
             if (e.code === 'Escape' && gameRunning && settingsScreen.classList.contains('hidden')) { togglePause(); return; }
             if (e.code === 'Escape' && !settingsScreen.classList.contains('hidden')) { closeSettings(); return; }
-            if (e.code === 'Digit1') { player.currentWeapon = 1; updateWeaponUI(); return; }
-            if (e.code === 'Digit2') { player.currentWeapon = 2; updateWeaponUI(); return; }
-            if (e.code === 'Digit3') { player.currentWeapon = 3; updateWeaponUI(); return; }
-            if (e.code === 'Digit4') { player.currentWeapon = 4; updateWeaponUI(); return; }
+            if (e.code === 'Digit1') { selectWeapon(1); return; }
+            if (e.code === 'Digit2') { selectWeapon(2); return; }
+            if (e.code === 'Digit3') { selectWeapon(3); return; }
+            if (e.code === 'Digit4') { selectWeapon(4); return; }
             if (e.code === 'KeyR') { manualReload(); return; } 
             if (e.code in keys) { if (e.code === 'Space') e.preventDefault(); keys[e.code] = true; }
         });
@@ -566,12 +781,17 @@
             const rect = canvas.getBoundingClientRect(); mouse.x = (e.clientX - rect.left); mouse.y = (e.clientY - rect.top); 
         });
 
-        window.addEventListener('DOMContentLoaded', () => { resizeCanvas(); startMenuMusic('main'); });
+        window.addEventListener('DOMContentLoaded', () => { 
+            resizeCanvas(); 
+            initTouchEvents();
+            startMenuMusic('main'); 
+        });
 
         function togglePause() {
             isPaused = !isPaused;
             if (isPaused) { pauseScreen.classList.remove('hidden'); startMenuMusic('pause'); } 
             else { pauseScreen.classList.add('hidden'); window.focus(); startMusic(); }
+            toggleTouchControlsVisibility();
         }
 
         function updateWeaponUI() {
@@ -592,6 +812,7 @@
                 if (player.flamerCooldown > 0) { uiWeaponAmmo.textContent = `ПЕРЕЗАРЯДКА (${Math.ceil(player.flamerCooldown / 60)}с)`; uiWeaponAmmo.style.color = "#ff4757"; } 
                 else { uiWeaponAmmo.textContent = `Заряд: ${((90 - player.flamerActiveTime) / 60).toFixed(1)}с`; uiWeaponAmmo.style.color = "#2ed573"; }
             }
+            updateTouchWeaponButtons();
         }
 
         function spawnExplosion(x, y, color) {
@@ -622,7 +843,11 @@
             
             for (let key in keys) keys[key] = false;
             screen.classList.add('hidden'); uiElements.classList.remove('hidden'); uiWeaponPanel.classList.remove('hidden');
+            
+            if (player.isInvincible) cheatIndicator.classList.remove('hidden');
+
             updateWeaponUI(); startWave();
+            toggleTouchControlsVisibility();
             if (!gameRunning) { gameRunning = true; gameLoop(); }
         }
 
@@ -713,7 +938,9 @@
         function gameOver(victory = false) {
             gameRunning = false; stopMusic();
             screen.classList.remove('hidden'); bossUi.classList.add('hidden'); pauseScreen.classList.add('hidden'); uiWaveTimer.classList.add('hidden');
-            uiElements.classList.add('hidden'); uiWeaponPanel.classList.add('hidden');
+            uiElements.classList.add('hidden'); uiWeaponPanel.classList.add('hidden'); cheatIndicator.classList.add('hidden');
+
+            toggleTouchControlsVisibility();
 
             if (victory) {
                 startMenuMusic('victory'); hasEarnedMedal = true;
@@ -736,11 +963,170 @@
             }
         }
 
+        // --- Инициализация тач-событий (Джойстики / Ползунки) ---
+        function initTouchEvents() {
+            const joyLeftZone = document.getElementById('joystick-left-zone');
+            const joyLeftKnob = joyLeftZone.querySelector('.joystick-knob');
+            const joyRightZone = document.getElementById('joystick-right-zone');
+            const joyRightKnob = joyRightZone.querySelector('.joystick-knob');
+
+            // Левый джойстик (Передвижение)
+            joyLeftZone.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.changedTouches[0];
+                touchLeftId = touch.identifier;
+                const rect = joyLeftZone.getBoundingClientRect();
+                joyLeftStart = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+                handleLeftJoy(touch.clientX, touch.clientY);
+            }, { passive: false });
+
+            // Правый джойстик (Прицеливание)
+            joyRightZone.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                const touch = e.changedTouches[0];
+                touchRightId = touch.identifier;
+                const rect = joyRightZone.getBoundingClientRect();
+                joyRightStart = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+                handleRightJoy(touch.clientX, touch.clientY);
+            }, { passive: false });
+
+            // Отслеживание движения для обоих джойстиков на экране
+            window.addEventListener('touchmove', (e) => {
+                for (let i = 0; i < e.touches.length; i++) {
+                    const touch = e.touches[i];
+                    if (touch.identifier === touchLeftId) {
+                        handleLeftJoy(touch.clientX, touch.clientY);
+                    }
+                    if (touch.identifier === touchRightId) {
+                        handleRightJoy(touch.clientX, touch.clientY);
+                    }
+                }
+            }, { passive: false });
+
+            const resetLeftJoy = () => {
+                touchLeftId = null;
+                joyLeftVector = { x: 0, y: 0 };
+                joyLeftKnob.style.transform = 'translate(0px, 0px)';
+            };
+
+            const resetRightJoy = () => {
+                touchRightId = null;
+                joyRightVector = { x: 0, y: 0 };
+                joyRightKnob.style.transform = 'translate(0px, 0px)';
+            };
+
+            // Отпускание касания
+            window.addEventListener('touchend', (e) => {
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    const touch = e.changedTouches[i];
+                    if (touch.identifier === touchLeftId) {
+                        resetLeftJoy();
+                    }
+                    if (touch.identifier === touchRightId) {
+                        resetRightJoy();
+                    }
+                }
+            }, { passive: false });
+
+            window.addEventListener('touchcancel', (e) => {
+                for (let i = 0; i < e.changedTouches.length; i++) {
+                    const touch = e.changedTouches[i];
+                    if (touch.identifier === touchLeftId) {
+                        resetLeftJoy();
+                    }
+                    if (touch.identifier === touchRightId) {
+                        resetRightJoy();
+                    }
+                }
+            }, { passive: false });
+
+            function handleLeftJoy(clientX, clientY) {
+                let dx = clientX - joyLeftStart.x;
+                let dy = clientY - joyLeftStart.y;
+                let dist = Math.hypot(dx, dy);
+                let maxDist = 45; // Максимальный вылет ручки ползунка
+                if (dist > maxDist) {
+                    dx = (dx / dist) * maxDist;
+                    dy = (dy / dist) * maxDist;
+                    dist = maxDist;
+                }
+                joyLeftKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+                joyLeftVector = { x: dx / maxDist, y: dy / maxDist };
+            }
+
+            function handleRightJoy(clientX, clientY) {
+                let dx = clientX - joyRightStart.x;
+                let dy = clientY - joyRightStart.y;
+                let dist = Math.hypot(dx, dy);
+                let maxDist = 45;
+                if (dist > maxDist) {
+                    dx = (dx / dist) * maxDist;
+                    dy = (dy / dist) * maxDist;
+                    dist = maxDist;
+                }
+                joyRightKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+                joyRightVector = { x: dx / maxDist, y: dy / maxDist };
+                if (dist > 5) {
+                    player.angle = Math.atan2(dy, dx);
+                }
+            }
+
+            // Тач Кнопка Рывка
+            const dashBtn = document.getElementById('touch-dash');
+            dashBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                triggerTouchDash();
+            }, { passive: false });
+
+            // Тач Кнопка Стрельбы
+            const shootBtn = document.getElementById('touch-shoot');
+            shootBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                keys.Space = true;
+            }, { passive: false });
+
+            const stopTouchShoot = (e) => {
+                e.preventDefault();
+                keys.Space = false;
+                canShoot = true;
+                player.pistolHasReleased = true;
+                if (player.currentWeapon === 4 && player.flamerActiveTime > 0 && !player.flamerIsOverheated) {
+                    player.flamerIsOverheated = true;
+                    player.flamerCooldown = 660;
+                }
+            };
+
+            shootBtn.addEventListener('touchend', stopTouchShoot, { passive: false });
+            shootBtn.addEventListener('touchcancel', stopTouchShoot, { passive: false });
+        }
+
+        function triggerTouchDash() {
+            if (player.dashCooldown <= 0 && !player.isDashing) {
+                let dx = joyLeftVector.x;
+                let dy = joyLeftVector.y;
+                // Если левый джойстик в покое, делаем рывок по вектору текущего взгляда
+                if (Math.hypot(dx, dy) < 0.1) {
+                    dx = Math.cos(player.angle);
+                    dy = Math.sin(player.angle);
+                } else {
+                    let len = Math.hypot(dx, dy);
+                    dx /= len;
+                    dy /= len;
+                }
+                playDashSound();
+                player.isDashing = true;
+                player.dashTimer = 12;
+                player.dashCooldown = 180;
+                player.dashDx = dx;
+                player.dashDy = dy;
+            }
+        }
+
         function update() {
             if (isPaused) return;
 
             if (waveTransition) {
-                waveTransitionTimer--;
+                waveTransition--;
                 if (waveTransitionTimer % 60 === 0 || waveTransitionTimer <= 0) { uiWaveTimer.textContent = `Новая волна через: ${Math.ceil(waveTransitionTimer / 60)}`; }
                 if (waveTransitionTimer <= 0) { currentWave++; startWave(); }
             }
@@ -773,9 +1159,16 @@
             }
 
             let moveX = 0; let moveY = 0;
-            if (keys.KeyW) moveY -= 1; if (keys.KeyS) moveY += 1;
-            if (keys.KeyA) moveX -= 1; if (keys.KeyD) moveX += 1;
-            if (moveX !== 0 && moveY !== 0) { moveX *= 0.7071; moveY *= 0.7071; }
+            
+            // Расчет движения в зависимости от выбранного типа управления
+            if (controlType === 'mobile') {
+                moveX = joyLeftVector.x;
+                moveY = joyLeftVector.y;
+            } else {
+                if (keys.KeyW) moveY -= 1; if (keys.KeyS) moveY += 1;
+                if (keys.KeyA) moveX -= 1; if (keys.KeyD) moveX += 1;
+                if (moveX !== 0 && moveY !== 0) { moveX *= 0.7071; moveY *= 0.7071; }
+            }
 
             if (player.dashCooldown > 0) {
                 player.dashCooldown--;
@@ -783,7 +1176,7 @@
                 else { uiDash.textContent = `РЫВОК: ОЖИДАНИЕ (${Math.ceil(player.dashCooldown / 60)}с)`; uiDash.style.color = "#ff4757"; }
             }
 
-            if (keys.ShiftLeft && player.dashCooldown <= 0 && !player.isDashing && (moveX !== 0 || moveY !== 0)) {
+            if (controlType === 'pc' && keys.ShiftLeft && player.dashCooldown <= 0 && !player.isDashing && (moveX !== 0 || moveY !== 0)) {
                 playDashSound(); player.isDashing = true; player.dashTimer = 12; player.dashCooldown = 180; player.dashDx = moveX; player.dashDy = moveY;
             }
 
@@ -793,24 +1186,30 @@
             player.x = Math.max(player.radius, Math.min(ARENA_SIZE - player.radius, player.x));
             player.y = Math.max(player.radius, Math.min(ARENA_SIZE - player.radius, player.y));
 
-            const screenCenterX = canvas.width / 2; const screenCenterY = canvas.height / 2;
-            player.angle = Math.atan2(mouse.y - screenCenterY, mouse.x - screenCenterX);
+            // Расчет угла направления взгляда в зависимости от управления
+            if (controlType === 'pc') {
+                const screenCenterX = canvas.width / 2; const screenCenterY = canvas.height / 2;
+                player.angle = Math.atan2(mouse.y - screenCenterY, mouse.x - screenCenterX);
+            } else {
+                if (Math.hypot(joyRightVector.x, joyRightVector.y) > 0.1) {
+                    player.angle = Math.atan2(joyRightVector.y, joyRightVector.x);
+                }
+            }
 
             if (keys.Space && player.currentWeapon !== 3 && player.currentWeapon !== 4 && canShoot) { shoot(); canShoot = false; }
 
-            // Обновление турелей (Твердые объекты + стрельба)
+            // Обновление турелей
             for (let i = turrets.length - 1; i >= 0; i--) {
                 let t = turrets[i];
                 t.angle = Math.atan2(player.y - t.y, player.x - t.x);
                 
                 t.shootTimer++;
                 if (t.shootTimer >= 60) {
-                    playLaserSound(); // Можно заменить звук
+                    playLaserSound();
                     enemyBullets.push({ x: t.x + Math.cos(t.angle)*30, y: t.y + Math.sin(t.angle)*30, dx: Math.cos(t.angle)*6, dy: Math.sin(t.angle)*6, radius: 6, trail: [] });
                     t.shootTimer = 0;
                 }
 
-                // Коллизия Игрок - Турель
                 let dist = Math.hypot(player.x - t.x, player.y - t.y);
                 let minDist = player.radius + t.radius;
                 if (dist < minDist && !player.isDashing) {
@@ -836,11 +1235,10 @@
                 let f = flames[i]; f.x += f.dx; f.y += f.dy; f.life--;
                 if (f.life <= 0) { flames.splice(i, 1); continue; }
                 
-                // Урон турелям
                 for (let j = turrets.length - 1; j >= 0; j--) {
                     let t = turrets[j];
                     if (Math.hypot(f.x - t.x, f.y - t.y) < f.radius + t.radius) {
-                        t.hp -= 0.1; // Огнемет наносит постепенный урон
+                        t.hp -= 0.1;
                         if (t.hp <= 0) { spawnExplosion(t.x, t.y, '#fff'); turrets.splice(j, 1); }
                     }
                 }
@@ -854,15 +1252,17 @@
                 }
             }
 
-            // Пули игрока
+            // Пули игрока уничтожаются строго на краях арены
             for (let i = bullets.length - 1; i >= 0; i--) {
                 let b = bullets[i]; b.x += b.dx; b.y += b.dy;
                 if (currentGraphicsMode === 'high' && b.trail) { b.trail.push({x: b.x, y: b.y}); if(b.trail.length > 5) b.trail.shift(); }
-                if (b.x < 0 || b.x > ARENA_SIZE || b.y < 0 || b.y > ARENA_SIZE) { bullets.splice(i, 1); continue; }
+                
+                if (b.x < b.radius || b.x > ARENA_SIZE - b.radius || b.y < b.radius || b.y > ARENA_SIZE - b.radius) { 
+                    bullets.splice(i, 1); continue; 
+                }
 
                 let hitSomething = false;
                 
-                // Урон турелям
                 for (let j = turrets.length - 1; j >= 0; j--) {
                     let t = turrets[j];
                     if (Math.hypot(b.x - t.x, b.y - t.y) < b.radius + t.radius) {
@@ -874,7 +1274,6 @@
                 }
                 if (hitSomething) continue;
 
-                // Урон врагам
                 for (let j = enemies.length - 1; j >= 0; j--) {
                     let e = enemies[j]; let dist = Math.hypot(b.x - e.x, b.y - e.y);
                     if (dist < b.radius + e.radius) {
@@ -882,7 +1281,6 @@
                         e.hp -= b.damage; bullets.splice(i, 1);
                         if (e.isBoss) {
                             bossBar.style.width = `${(e.hp / e.maxHp) * 100}%`;
-                            // Триггер щита на 50%
                             if (e.hp <= e.maxHp / 2 && !bossShieldTriggered) { 
                                 bossShieldActive = true; bossShieldTriggered = true; 
                                 bossStatusText.textContent = "УНИЧТОЖЬТЕ ТУРЕЛИ!"; bossStatusText.style.color = "#0abde3"; 
@@ -899,7 +1297,6 @@
                 }
             }
 
-            // Щит босса спадает если турелей нет
             if (bossShieldActive && turrets.length === 0) {
                 bossShieldActive = false;
                 bossEnraged = true;
@@ -910,13 +1307,19 @@
                 if (boss) boss.speed = 3.5;
             }
 
-            // Вражеские пули
-            if (!player.isDashing) {
+            // Пули врагов и босса не пролетают края + крестообразный диагональный разлет
+            if (!player.isDashing && !player.isInvincible) {
                 for (let i = bossBullets.length - 1; i >= 0; i--) {
                     let bb = bossBullets[i]; bb.x += bb.dx; bb.y += bb.dy;
                     if (currentGraphicsMode === 'high' && bb.trail) { bb.trail.push({x: bb.x, y: bb.y}); if(bb.trail.length > 8) bb.trail.shift(); }
+                    
                     if (bb.x < bb.radius || bb.x > ARENA_SIZE - bb.radius || bb.y < bb.radius || bb.y > ARENA_SIZE - bb.radius) {
-                        if (bossEnraged) { const subAngles = [0, Math.PI / 2, Math.PI, Math.PI * 1.5]; subAngles.forEach(ang => { enemyBullets.push({ x: Math.max(10, Math.min(ARENA_SIZE - 10, bb.x)), y: Math.max(10, Math.min(ARENA_SIZE - 10, bb.y)), dx: Math.cos(ang) * 4.5, dy: Math.sin(ang) * 4.5, radius: 6, trail: [] }); }); }
+                        if (bossEnraged) { 
+                            const subAngles = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4]; 
+                            subAngles.forEach(ang => { 
+                                enemyBullets.push({ x: Math.max(10, Math.min(ARENA_SIZE - 10, bb.x)), y: Math.max(10, Math.min(ARENA_SIZE - 10, bb.y)), dx: Math.cos(ang) * 4.5, dy: Math.sin(ang) * 4.5, radius: 6, trail: [] }); 
+                            }); 
+                        }
                         bossBullets.splice(i, 1); continue;
                     }
                     if (Math.hypot(player.x - bb.x, player.y - bb.y) < player.radius + bb.radius) { gameOver(false); return; }
@@ -924,8 +1327,30 @@
                 for (let i = enemyBullets.length - 1; i >= 0; i--) {
                     let eb = enemyBullets[i]; eb.x += eb.dx; eb.y += eb.dy;
                     if (currentGraphicsMode === 'high' && eb.trail) { eb.trail.push({x: eb.x, y: eb.y}); if(eb.trail.length > 5) eb.trail.shift(); }
-                    if (eb.x < 0 || eb.x > ARENA_SIZE || eb.y < 0 || eb.y > ARENA_SIZE) { enemyBullets.splice(i, 1); continue; }
+                    
+                    if (eb.x < eb.radius || eb.x > ARENA_SIZE - eb.radius || eb.y < eb.radius || eb.y > ARENA_SIZE - eb.radius) { 
+                        enemyBullets.splice(i, 1); continue; 
+                    }
                     if (Math.hypot(player.x - eb.x, player.y - eb.y) < player.radius + eb.radius) { gameOver(false); return; }
+                }
+            } else if (player.isInvincible) {
+                for (let i = bossBullets.length - 1; i >= 0; i--) {
+                    let bb = bossBullets[i]; bb.x += bb.dx; bb.y += bb.dy;
+                    if (bb.x < bb.radius || bb.x > ARENA_SIZE - bb.radius || bb.y < bb.radius || bb.y > ARENA_SIZE - bb.radius) {
+                        if (bossEnraged) { 
+                            const subAngles = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4]; 
+                            subAngles.forEach(ang => { 
+                                enemyBullets.push({ x: Math.max(10, Math.min(ARENA_SIZE - 10, bb.x)), y: Math.max(10, Math.min(ARENA_SIZE - 10, bb.y)), dx: Math.cos(ang) * 4.5, dy: Math.sin(ang) * 4.5, radius: 6, trail: [] }); 
+                            }); 
+                        }
+                        bossBullets.splice(i, 1);
+                    }
+                }
+                for (let i = enemyBullets.length - 1; i >= 0; i--) {
+                    let eb = enemyBullets[i]; eb.x += eb.dx; eb.y += eb.dy;
+                    if (eb.x < eb.radius || eb.x > ARENA_SIZE - eb.radius || eb.y < eb.radius || eb.y > ARENA_SIZE - eb.radius) { 
+                        enemyBullets.splice(i, 1); 
+                    }
                 }
             }
 
@@ -962,19 +1387,16 @@
                     e.shootCooldown++; if (e.shootCooldown >= 60) { enemyBullets.push({ x: e.x, y: e.y, dx: Math.cos(angleToPlayer) * 5, dy: Math.sin(angleToPlayer) * 5, radius: 5.5, trail: [] }); e.shootCooldown = 0; }
                 } else { e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed; }
 
-                // Коллизия врагов с турелями
                 for (let t of turrets) {
                     let d = Math.hypot(e.x - t.x, e.y - t.y);
                     let mD = e.radius + t.radius;
                     if (d < mD) {
-                        let ov = mD - d;
-                        let ang = Math.atan2(e.y - t.y, e.x - t.x);
-                        e.x += Math.cos(ang) * ov;
-                        e.y += Math.sin(ang) * ov;
+                        let ov = mD - d; let ang = Math.atan2(e.y - t.y, e.x - t.x);
+                        e.x += Math.cos(ang) * ov; e.y += Math.sin(ang) * ov;
                     }
                 }
 
-                if (!player.isDashing && distToPlayer < player.radius + e.radius && (!e.isBoss || !bossShieldActive)) { gameOver(false); return; }
+                if (!player.isDashing && !player.isInvincible && distToPlayer < player.radius + e.radius && (!e.isBoss || !bossShieldActive)) { gameOver(false); return; }
             }
 
             if (enemies.length === 0 && !waveTransition) {
@@ -1008,19 +1430,10 @@
             turrets.forEach(t => {
                 ctx.save();
                 ctx.translate(t.x, t.y);
-                // Основание (квадрат)
-                ctx.fillStyle = '#2f3542';
-                ctx.fillRect(-35, -35, 70, 70);
-                // Вращение дула к игроку
+                ctx.fillStyle = '#2f3542'; ctx.fillRect(-35, -35, 70, 70);
                 ctx.rotate(t.angle);
-                // Дуло (прямоугольник)
-                ctx.fillStyle = '#57606f';
-                ctx.fillRect(15, -8, 25, 16);
-                // Башня (круг)
-                ctx.fillStyle = '#4b6584';
-                ctx.beginPath(); ctx.arc(0, 0, 22, 0, Math.PI * 2); ctx.fill();
-                
-                // Полоса ХП
+                ctx.fillStyle = '#57606f'; ctx.fillRect(15, -8, 25, 16);
+                ctx.fillStyle = '#4b6584'; ctx.beginPath(); ctx.arc(0, 0, 22, 0, Math.PI * 2); ctx.fill();
                 ctx.rotate(-t.angle);
                 ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(-30, -50, 60, 6);
                 ctx.fillStyle = '#ff4757'; ctx.fillRect(-30, -50, 60 * (t.hp / t.maxHp), 6);
@@ -1078,7 +1491,16 @@
             });
 
             // Игрок
-            ctx.save(); ctx.translate(player.x, player.y); ctx.rotate(player.angle);
+            ctx.save(); ctx.translate(player.x, player.y); 
+
+            if (player.isInvincible) {
+                ctx.save();
+                ctx.shadowBlur = 20; ctx.shadowColor = '#ffd32a'; ctx.strokeStyle = '#ffd32a'; ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.arc(0, 0, player.radius + 8, 0, Math.PI * 2); ctx.stroke();
+                ctx.restore();
+            }
+
+            ctx.rotate(player.angle);
             if (player.currentWeapon === 1) { ctx.fillStyle = '#7f8c8d'; ctx.fillRect(15, -4, 15, 8); } 
             else if (player.currentWeapon === 2) { ctx.fillStyle = '#d2dae2'; ctx.fillRect(14, -7, 18, 14); } 
             else if (player.currentWeapon === 3) { ctx.fillStyle = '#57606f'; ctx.fillRect(15, -5, 23, 10); }
