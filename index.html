@@ -204,7 +204,6 @@
             background-color: #57606f;
         }
         
-        /* Вращение и сияние медали */
         #victory-medal {
             position: absolute;
             top: 20px;
@@ -252,129 +251,6 @@
             font-weight: bold;
             text-transform: uppercase;
         }
-
-        /* --- СЕНСОРНОЕ УПРАВЛЕНИЕ (ТЕЛЕФОН) --- */
-        #touch-controls {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 6;
-        }
-        .joystick-zone {
-            position: absolute;
-            bottom: 40px;
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            pointer-events: auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            touch-action: none;
-        }
-        #joystick-left-zone {
-            left: 40px;
-            background: rgba(0, 168, 255, 0.15);
-            border: 3px dashed rgba(0, 168, 255, 0.4);
-            box-shadow: 0 0 15px rgba(0, 168, 255, 0.2);
-        }
-        #joystick-right-zone {
-            right: 40px;
-            background: rgba(255, 71, 87, 0.15);
-            border: 3px dashed rgba(255, 71, 87, 0.4);
-            box-shadow: 0 0 15px rgba(255, 71, 87, 0.2);
-        }
-        .joystick-knob {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            pointer-events: none;
-            transition: transform 0.05s linear;
-        }
-        #joystick-left-zone .joystick-knob {
-            background: rgba(0, 168, 255, 0.6);
-            box-shadow: 0 0 10px rgba(0, 168, 255, 0.5);
-        }
-        #joystick-right-zone .joystick-knob {
-            background: rgba(255, 71, 87, 0.6);
-            box-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
-        }
-        .touch-action-btn {
-            position: absolute;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            border: none;
-            color: white;
-            font-weight: bold;
-            font-size: 10px;
-            pointer-events: auto;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-transform: uppercase;
-            touch-action: none;
-        }
-        #touch-dash {
-            left: 77px; 
-            bottom: 185px;
-            background-color: rgba(0, 168, 255, 0.75);
-            border: 2px solid rgba(255,255,255,0.4);
-        }
-        #touch-dash:active {
-            background-color: rgba(0, 168, 255, 0.95);
-        }
-        #touch-shoot {
-            right: 77px; 
-            bottom: 185px;
-            background-color: rgba(255, 71, 87, 0.75);
-            border: 2px solid rgba(255,255,255,0.4);
-        }
-        #touch-shoot:active {
-            background-color: rgba(255, 71, 87, 0.95);
-        }
-        #touch-reload {
-            right: 77px; 
-            bottom: 250px;
-            background-color: rgba(255, 211, 42, 0.75);
-            border: 2px solid rgba(255,255,255,0.4);
-            color: #333;
-        }
-        #touch-reload:active {
-            background-color: rgba(255, 211, 42, 0.95);
-        }
-        #touch-weapons-container {
-            position: absolute;
-            bottom: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 12px;
-            pointer-events: auto;
-            z-index: 7;
-        }
-        .touch-weap-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 0; /* Строго квадратные */
-            border: 3px solid rgba(255, 255, 255, 0.4);
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-            cursor: pointer;
-            transition: transform 0.1s, border-color 0.1s;
-            touch-action: none;
-        }
-        .touch-weap-btn.active {
-            border-color: #ffffff !important;
-            transform: scale(1.15);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-        }
     </style>
 </head>
 <body>
@@ -399,30 +275,6 @@
             <div id="boss-bar"></div>
         </div>
         <div id="boss-status">Этап 1</div>
-    </div>
-
-    <!-- Мобильное управление -->
-    <div id="touch-controls" class="hidden">
-        <!-- Левый джойстик (Ходьба - Синий) -->
-        <div id="joystick-left-zone" class="joystick-zone">
-            <div class="joystick-knob"></div>
-        </div>
-        <button id="touch-dash" class="touch-action-btn">Рывок</button>
-        
-        <!-- Правый джойстик (Прицеливание - Красный) -->
-        <div id="joystick-right-zone" class="joystick-zone">
-            <div class="joystick-knob"></div>
-        </div>
-        <button id="touch-shoot" class="touch-action-btn">Огонь</button>
-        <button id="touch-reload" class="touch-action-btn">Перез.</button>
-        
-        <!-- Выбор оружия (Квадратные) -->
-        <div id="touch-weapons-container">
-            <button id="weap-btn-1" class="touch-weap-btn" style="background-color: #ff4757;" onclick="selectWeapon(1)">1</button>
-            <button id="weap-btn-2" class="touch-weap-btn" style="background-color: #ffa502;" onclick="selectWeapon(2)">2</button>
-            <button id="weap-btn-3" class="touch-weap-btn" style="background-color: #2ed573;" onclick="selectWeapon(3)">3</button>
-            <button id="weap-btn-4" class="touch-weap-btn" style="background-color: #ff9f43;" onclick="selectWeapon(4)">4</button>
-        </div>
     </div>
 
     <div id="screen">
@@ -454,10 +306,11 @@
         <div class="menu-box" style="min-width: 360px;">
             <h2 style="color: #ff4757; margin: 0 0 10px 0; text-transform: uppercase;">Настройки</h2>
             <div class="setting-row">
-                <label>Управление</label>
-                <select id="control-type" onchange="changeControlType()">
-                    <option value="pc" selected>Клавиатура + Мышь</option>
-                    <option value="mobile">Сенсорный экран</option>
+                <label>Сложность</label>
+                <select id="difficulty-level" onchange="changeDifficulty()">
+                    <option value="easy">Лёгкая</option>
+                    <option value="standard" selected>Стандартная</option>
+                    <option value="hard">Сложная</option>
                 </select>
             </div>
             <div class="setting-row">
@@ -521,17 +374,9 @@
         let volumeMusicModifier = 1.0; 
         let volumeSfxModifier = 0.6;
         let currentGraphicsMode = 'medium'; 
+        let currentDifficulty = 'standard';
         let previousAudioContextState = 'main';
         let hasEarnedMedal = false;
-
-        // Переменные сенсорного управления
-        let controlType = 'pc';
-        let touchLeftId = null;
-        let touchRightId = null;
-        let joyLeftStart = { x: 0, y: 0 };
-        let joyRightStart = { x: 0, y: 0 };
-        let joyLeftVector = { x: 0, y: 0 };
-        let joyRightVector = { x: 0, y: 0 };
 
         const player = {
             x: ARENA_SIZE / 2, y: ARENA_SIZE / 2, radius: 20, speed: 4, angle: 0, currentWeapon: 1, 
@@ -544,7 +389,7 @@
         };
 
         let bullets = []; let flames = []; let bossBullets = []; let enemyBullets = []; let enemies = []; 
-        let ammoDrops = []; let particles = []; let turrets = [];
+        let ammoDrops = []; let particles = []; let turrets = []; let gameExplosions = [];
 
         let waveTransition = false; let waveTransitionTimer = 0; 
         const keys = { KeyW: false, KeyA: false, KeyS: false, KeyD: false, Space: false, ShiftLeft: false };
@@ -563,7 +408,6 @@
             if (audioCtx.state === 'suspended') { audioCtx.resume(); }
         }
 
-        // SFX
         function playLaserSound() { if (isPaused) return; initAudio(); let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(420, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(90, audioCtx.currentTime + 0.1); gain.gain.setValueAtTime(0.05 * volumeSfxModifier, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.1); osc.start(); osc.stop(audioCtx.currentTime + 0.1); }
         function playRifleSound() { if (isPaused) return; initAudio(); let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(550, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.08); gain.gain.setValueAtTime(0.03 * volumeSfxModifier, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.08); osc.start(); osc.stop(audioCtx.currentTime + 0.08); }
         function playShotgunSound() { if (isPaused) return; initAudio(); for(let i = 0; i < 3; i++) { let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.type = 'sawtooth'; osc.frequency.setValueAtTime(180 + (i * 40), audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(35, audioCtx.currentTime + 0.22); gain.gain.setValueAtTime(0.10 * volumeSfxModifier, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.22); osc.start(); osc.stop(audioCtx.currentTime + 0.22); } }
@@ -686,39 +530,8 @@
             currentGraphicsMode = document.getElementById('graphics-quality').value;
         }
 
-        function changeControlType() {
-            controlType = document.getElementById('control-type').value;
-            toggleTouchControlsVisibility();
-        }
-
-        function toggleTouchControlsVisibility() {
-            const touchControls = document.getElementById('touch-controls');
-            
-            if (gameRunning && !isPaused && controlType === 'mobile') {
-                touchControls.classList.remove('hidden');
-                updateTouchWeaponButtons();
-            } else {
-                touchControls.classList.add('hidden');
-            }
-        }
-
-        function selectWeapon(num) {
-            player.currentWeapon = num;
-            updateWeaponUI();
-            updateTouchWeaponButtons();
-        }
-
-        function updateTouchWeaponButtons() {
-            for (let i = 1; i <= 4; i++) {
-                const btn = document.getElementById(`weap-btn-${i}`);
-                if (btn) {
-                    if (player.currentWeapon === i) {
-                        btn.classList.add('active');
-                    } else {
-                        btn.classList.remove('active');
-                    }
-                }
-            }
+        function changeDifficulty() {
+            currentDifficulty = document.getElementById('difficulty-level').value;
         }
 
         function resizeCanvas() { 
@@ -741,7 +554,6 @@
             
             if (hasEarnedMedal) { victoryMedal.classList.remove('hidden'); }
             
-            toggleTouchControlsVisibility();
             startMenuMusic('main');
         }
 
@@ -772,10 +584,10 @@
 
             if (e.code === 'Escape' && gameRunning && settingsScreen.classList.contains('hidden')) { togglePause(); return; }
             if (e.code === 'Escape' && !settingsScreen.classList.contains('hidden')) { closeSettings(); return; }
-            if (e.code === 'Digit1') { selectWeapon(1); return; }
-            if (e.code === 'Digit2') { selectWeapon(2); return; }
-            if (e.code === 'Digit3') { selectWeapon(3); return; }
-            if (e.code === 'Digit4') { selectWeapon(4); return; }
+            if (e.code === 'Digit1') { player.currentWeapon = 1; updateWeaponUI(); return; }
+            if (e.code === 'Digit2') { player.currentWeapon = 2; updateWeaponUI(); return; }
+            if (e.code === 'Digit3') { player.currentWeapon = 3; updateWeaponUI(); return; }
+            if (e.code === 'Digit4') { player.currentWeapon = 4; updateWeaponUI(); return; }
             if (e.code === 'KeyR') { manualReload(); return; } 
             if (e.code in keys) { if (e.code === 'Space') e.preventDefault(); keys[e.code] = true; }
         });
@@ -792,17 +604,12 @@
             const rect = canvas.getBoundingClientRect(); mouse.x = (e.clientX - rect.left); mouse.y = (e.clientY - rect.top); 
         });
 
-        window.addEventListener('DOMContentLoaded', () => { 
-            resizeCanvas(); 
-            initTouchEvents();
-            startMenuMusic('main'); 
-        });
+        window.addEventListener('DOMContentLoaded', () => { resizeCanvas(); startMenuMusic('main'); });
 
         function togglePause() {
             isPaused = !isPaused;
             if (isPaused) { pauseScreen.classList.remove('hidden'); startMenuMusic('pause'); } 
             else { pauseScreen.classList.add('hidden'); window.focus(); startMusic(); }
-            toggleTouchControlsVisibility();
         }
 
         function updateWeaponUI() {
@@ -823,7 +630,6 @@
                 if (player.flamerCooldown > 0) { uiWeaponAmmo.textContent = `ПЕРЕЗАРЯДКА (${Math.ceil(player.flamerCooldown / 60)}с)`; uiWeaponAmmo.style.color = "#ff4757"; } 
                 else { uiWeaponAmmo.textContent = `Заряд: ${((90 - player.flamerActiveTime) / 60).toFixed(1)}с`; uiWeaponAmmo.style.color = "#2ed573"; }
             }
-            updateTouchWeaponButtons();
         }
 
         function spawnExplosion(x, y, color) {
@@ -844,7 +650,7 @@
             player.flamerActiveTime = 0; player.flamerCooldown = 0; player.flamerIsOverheated = false;
             player.isDashing = false; player.dashTimer = 0; player.dashCooldown = 0;
             
-            bullets = []; flames = []; bossBullets = []; enemyBullets = []; enemies = []; ammoDrops = []; particles = []; turrets = [];
+            bullets = []; flames = []; bossBullets = []; enemyBullets = []; enemies = []; ammoDrops = []; particles = []; turrets = []; gameExplosions = [];
             canShoot = true; bossShootTimer = 0; bossShieldActive = false; bossShieldTriggered = false; bossEnraged = false; waveTransition = false; waveTransitionTimer = 0;
             
             bossUi.classList.add('hidden'); pauseScreen.classList.add('hidden'); uiWaveTimer.classList.add('hidden'); victoryMedal.classList.add('hidden');
@@ -858,10 +664,7 @@
             if (player.isInvincible) cheatIndicator.classList.remove('hidden');
 
             updateWeaponUI(); startWave();
-            
             if (!gameRunning) { gameRunning = true; gameLoop(); }
-            // Теперь игра технически запущена, и кнопки отобразятся корректно
-            toggleTouchControlsVisibility();
         }
 
         function startWave() {
@@ -882,6 +685,8 @@
 
         function spawnEnemy(type, forcedX = null, forcedY = null) {
             let x, y; let radius = (type === 'boss') ? 45 : 18;
+            if (type === 'normal' && currentDifficulty === 'hard') radius = 22;
+
             if (forcedX !== null && forcedY !== null) { 
                 x = Math.max(radius, Math.min(ARENA_SIZE - radius, forcedX)); y = Math.max(radius, Math.min(ARENA_SIZE - radius, forcedY));
             } else {
@@ -893,18 +698,48 @@
                 }
             }
             let config = { radius: radius, speed: 2.3, hp: 10, maxHp: 10, color: '#ffa502', isBoss: false, isShooter: false, shootCooldown: Math.random() * 30 };
-            if (type === 'fast') { config.speed = 4.6; config.hp = 5; config.maxHp = 5; config.color = '#2ed573'; } 
-            else if (type === 'shooter') { config.hp = 4; config.maxHp = 4; config.color = '#ffd32a'; config.isShooter = true; } 
-            else if (type === 'boss') { config.speed = 1.6; config.hp = 250; config.maxHp = 250; config.color = '#ff4757'; config.isBoss = true; }
-            enemies.push({ x, y, radius: config.radius, speed: config.speed, hp: config.hp, maxHp: config.maxHp, color: config.color, isBoss: config.isBoss, isShooter: config.isShooter, shootCooldown: config.shootCooldown, burnTimer: 0 });
+            
+            if (type === 'normal') {
+                if (currentDifficulty === 'easy') { config.hp = 6; config.maxHp = 6; }
+            } else if (type === 'fast') { 
+                config.speed = (currentDifficulty === 'easy') ? player.speed : 4.6; 
+                config.hp = (currentDifficulty === 'hard') ? 6 : 5; 
+                config.maxHp = config.hp; 
+                config.color = '#2ed573'; 
+            } else if (type === 'shooter') { 
+                config.hp = 4; config.maxHp = 4; config.color = '#ffd32a'; config.isShooter = true; 
+            } else if (type === 'boss') { 
+                config.speed = 1.6; 
+                config.hp = (currentDifficulty === 'easy') ? 100 : 250; 
+                config.maxHp = config.hp; 
+                config.color = '#ff4757'; config.isBoss = true; 
+            }
+
+            let enemy = { 
+                type: type, x: x, y: y, radius: config.radius, speed: config.speed, hp: config.hp, maxHp: config.maxHp, 
+                color: config.color, isBoss: config.isBoss, isShooter: config.isShooter, shootCooldown: config.shootCooldown, burnTimer: 0 
+            };
+
+            if (type === 'normal') {
+                enemy.dashState = 0; enemy.dashTimer = 0; enemy.dashDx = 0; enemy.dashDy = 0;
+            } else if (type === 'fast') {
+                enemy.dodgeCooldown = 0;
+            } else if (type === 'shooter') {
+                enemy.isAiming = false; enemy.rifleAimTimer = 0; enemy.aimAngle = 0;
+            } else if (type === 'boss') {
+                enemy.attackState = 0; enemy.dashCycleTimer = 0; enemy.dashDx = 0; enemy.dashDy = 0;
+            }
+
+            enemies.push(enemy);
         }
 
         function spawnTurrets() {
+            let turretHp = (currentDifficulty === 'easy') ? 15 : 30;
             turrets = [
-                { x: 150, y: 150, hp: 30, maxHp: 30, radius: 35, shootTimer: 0, angle: 0 },
-                { x: ARENA_SIZE - 150, y: 150, hp: 30, maxHp: 30, radius: 35, shootTimer: 30, angle: 0 },
-                { x: 150, y: ARENA_SIZE - 150, hp: 30, maxHp: 30, radius: 35, shootTimer: 15, angle: 0 },
-                { x: ARENA_SIZE - 150, y: ARENA_SIZE - 150, hp: 30, maxHp: 30, radius: 35, shootTimer: 45, angle: 0 }
+                { x: 150, y: 150, hp: turretHp, maxHp: turretHp, radius: 35, shootTimer: 0, angle: 0 },
+                { x: ARENA_SIZE - 150, y: 150, hp: turretHp, maxHp: turretHp, radius: 35, shootTimer: 30, angle: 0 },
+                { x: 150, y: ARENA_SIZE - 150, hp: turretHp, maxHp: turretHp, radius: 35, shootTimer: 15, angle: 0 },
+                { x: ARENA_SIZE - 150, y: ARENA_SIZE - 150, hp: turretHp, maxHp: turretHp, radius: 35, shootTimer: 45, angle: 0 }
             ];
         }
 
@@ -945,15 +780,15 @@
 
         function bossShoot(boss) {
             playBossLaserSound(); let angleToPlayer = Math.atan2(player.y - boss.y, player.x - boss.x);
-            bossBullets.push({ x: boss.x, y: boss.y, dx: Math.cos(angleToPlayer) * 3.5, dy: Math.sin(angleToPlayer) * 3.5, radius: 22, trail: [] });
+            let bSpeed = 3.5;
+            if (currentDifficulty === 'hard' && bossEnraged) bSpeed = 6;
+            bossBullets.push({ x: boss.x, y: boss.y, dx: Math.cos(angleToPlayer) * bSpeed, dy: Math.sin(angleToPlayer) * bSpeed, radius: 22, trail: [] });
         }
 
         function gameOver(victory = false) {
             gameRunning = false; stopMusic();
             screen.classList.remove('hidden'); bossUi.classList.add('hidden'); pauseScreen.classList.add('hidden'); uiWaveTimer.classList.add('hidden');
             uiElements.classList.add('hidden'); uiWeaponPanel.classList.add('hidden'); cheatIndicator.classList.add('hidden');
-
-            toggleTouchControlsVisibility();
 
             if (victory) {
                 startMenuMusic('victory'); hasEarnedMedal = true;
@@ -976,177 +811,11 @@
             }
         }
 
-        // --- Инициализация тач-событий (Джойстики / Ползунки / Кнопки) ---
-        function initTouchEvents() {
-            const joyLeftZone = document.getElementById('joystick-left-zone');
-            const joyLeftKnob = joyLeftZone.querySelector('.joystick-knob');
-            const joyRightZone = document.getElementById('joystick-right-zone');
-            const joyRightKnob = joyRightZone.querySelector('.joystick-knob');
-
-            // Левый джойстик (Передвижение)
-            joyLeftZone.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                const touch = e.changedTouches[0];
-                touchLeftId = touch.identifier;
-                const rect = joyLeftZone.getBoundingClientRect();
-                joyLeftStart = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-                handleLeftJoy(touch.clientX, touch.clientY);
-            }, { passive: false });
-
-            // Правый джойстик (Прицеливание)
-            joyRightZone.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                const touch = e.changedTouches[0];
-                touchRightId = touch.identifier;
-                const rect = joyRightZone.getBoundingClientRect();
-                joyRightStart = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-                handleRightJoy(touch.clientX, touch.clientY);
-            }, { passive: false });
-
-            // Отслеживание движения для обоих джойстиков на экране
-            window.addEventListener('touchmove', (e) => {
-                for (let i = 0; i < e.touches.length; i++) {
-                    const touch = e.touches[i];
-                    if (touch.identifier === touchLeftId) {
-                        handleLeftJoy(touch.clientX, touch.clientY);
-                    }
-                    if (touch.identifier === touchRightId) {
-                        handleRightJoy(touch.clientX, touch.clientY);
-                    }
-                }
-            }, { passive: false });
-
-            const resetLeftJoy = () => {
-                touchLeftId = null;
-                joyLeftVector = { x: 0, y: 0 };
-                joyLeftKnob.style.transform = 'translate(0px, 0px)';
-            };
-
-            const resetRightJoy = () => {
-                touchRightId = null;
-                joyRightVector = { x: 0, y: 0 };
-                joyRightKnob.style.transform = 'translate(0px, 0px)';
-            };
-
-            // Отпускание касания
-            window.addEventListener('touchend', (e) => {
-                for (let i = 0; i < e.changedTouches.length; i++) {
-                    const touch = e.changedTouches[i];
-                    if (touch.identifier === touchLeftId) {
-                        resetLeftJoy();
-                    }
-                    if (touch.identifier === touchRightId) {
-                        resetRightJoy();
-                    }
-                }
-            }, { passive: false });
-
-            window.addEventListener('touchcancel', (e) => {
-                for (let i = 0; i < e.changedTouches.length; i++) {
-                    const touch = e.changedTouches[i];
-                    if (touch.identifier === touchLeftId) {
-                        resetLeftJoy();
-                    }
-                    if (touch.identifier === touchRightId) {
-                        resetRightJoy();
-                    }
-                }
-            }, { passive: false });
-
-            function handleLeftJoy(clientX, clientY) {
-                let dx = clientX - joyLeftStart.x;
-                let dy = clientY - joyLeftStart.y;
-                let dist = Math.hypot(dx, dy);
-                let maxDist = 45; // Максимальный вылет ручки ползунка
-                if (dist > maxDist) {
-                    dx = (dx / dist) * maxDist;
-                    dy = (dy / dist) * maxDist;
-                    dist = maxDist;
-                }
-                joyLeftKnob.style.transform = `translate(${dx}px, ${dy}px)`;
-                joyLeftVector = { x: dx / maxDist, y: dy / maxDist };
-            }
-
-            function handleRightJoy(clientX, clientY) {
-                let dx = clientX - joyRightStart.x;
-                let dy = clientY - joyRightStart.y;
-                let dist = Math.hypot(dx, dy);
-                let maxDist = 45;
-                if (dist > maxDist) {
-                    dx = (dx / dist) * maxDist;
-                    dy = (dy / dist) * maxDist;
-                    dist = maxDist;
-                }
-                joyRightKnob.style.transform = `translate(${dx}px, ${dy}px)`;
-                joyRightVector = { x: dx / maxDist, y: dy / maxDist };
-                if (dist > 5) {
-                    player.angle = Math.atan2(dy, dx);
-                }
-            }
-
-            // Тач Кнопка Рывка
-            const dashBtn = document.getElementById('touch-dash');
-            dashBtn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                triggerTouchDash();
-            }, { passive: false });
-
-            // Тач Кнопка Стрельбы
-            const shootBtn = document.getElementById('touch-shoot');
-            shootBtn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                keys.Space = true;
-            }, { passive: false });
-
-            const stopTouchShoot = (e) => {
-                e.preventDefault();
-                keys.Space = false;
-                canShoot = true;
-                player.pistolHasReleased = true;
-                if (player.currentWeapon === 4 && player.flamerActiveTime > 0 && !player.flamerIsOverheated) {
-                    player.flamerIsOverheated = true;
-                    player.flamerCooldown = 660;
-                }
-            };
-
-            shootBtn.addEventListener('touchend', stopTouchShoot, { passive: false });
-            shootBtn.addEventListener('touchcancel', stopTouchShoot, { passive: false });
-            
-            // Тач Кнопка Перезарядки
-            const reloadBtn = document.getElementById('touch-reload');
-            reloadBtn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                manualReload();
-            }, { passive: false });
-        }
-
-        function triggerTouchDash() {
-            if (player.dashCooldown <= 0 && !player.isDashing) {
-                let dx = joyLeftVector.x;
-                let dy = joyLeftVector.y;
-                // Если левый джойстик в покое, делаем рывок по вектору текущего взгляда
-                if (Math.hypot(dx, dy) < 0.1) {
-                    dx = Math.cos(player.angle);
-                    dy = Math.sin(player.angle);
-                } else {
-                    let len = Math.hypot(dx, dy);
-                    dx /= len;
-                    dy /= len;
-                }
-                playDashSound();
-                player.isDashing = true;
-                player.dashTimer = 12;
-                player.dashCooldown = 180;
-                player.dashDx = dx;
-                player.dashDy = dy;
-            }
-        }
-
         function update() {
             if (isPaused) return;
 
             if (waveTransition) {
-                waveTransition--;
+                waveTransitionTimer--;
                 if (waveTransitionTimer % 60 === 0 || waveTransitionTimer <= 0) { uiWaveTimer.textContent = `Новая волна через: ${Math.ceil(waveTransitionTimer / 60)}`; }
                 if (waveTransitionTimer <= 0) { currentWave++; startWave(); }
             }
@@ -1155,6 +824,19 @@
                 for (let i = particles.length - 1; i >= 0; i--) {
                     let p = particles[i]; p.x += p.dx; p.y += p.dy; p.alpha -= p.decay;
                     if (p.alpha <= 0) particles.splice(i, 1);
+                }
+            }
+
+            for (let i = gameExplosions.length - 1; i >= 0; i--) {
+                let exp = gameExplosions[i];
+                exp.radius += (exp.maxRadius - exp.radius) * 0.2 + 1;
+                exp.alpha -= 0.03;
+                if (exp.alpha <= 0) { gameExplosions.splice(i, 1); continue; }
+
+                if (exp.isHostile && !player.isDashing && !player.isInvincible) {
+                    if (Math.hypot(player.x - exp.x, player.y - exp.y) < exp.radius + player.radius) {
+                        gameOver(false); return;
+                    }
                 }
             }
 
@@ -1179,16 +861,9 @@
             }
 
             let moveX = 0; let moveY = 0;
-            
-            // Расчет движения в зависимости от выбранного типа управления
-            if (controlType === 'mobile') {
-                moveX = joyLeftVector.x;
-                moveY = joyLeftVector.y;
-            } else {
-                if (keys.KeyW) moveY -= 1; if (keys.KeyS) moveY += 1;
-                if (keys.KeyA) moveX -= 1; if (keys.KeyD) moveX += 1;
-                if (moveX !== 0 && moveY !== 0) { moveX *= 0.7071; moveY *= 0.7071; }
-            }
+            if (keys.KeyW) moveY -= 1; if (keys.KeyS) moveY += 1;
+            if (keys.KeyA) moveX -= 1; if (keys.KeyD) moveX += 1;
+            if (moveX !== 0 && moveY !== 0) { moveX *= 0.7071; moveY *= 0.7071; }
 
             if (player.dashCooldown > 0) {
                 player.dashCooldown--;
@@ -1196,7 +871,7 @@
                 else { uiDash.textContent = `РЫВОК: ОЖИДАНИЕ (${Math.ceil(player.dashCooldown / 60)}с)`; uiDash.style.color = "#ff4757"; }
             }
 
-            if (controlType === 'pc' && keys.ShiftLeft && player.dashCooldown <= 0 && !player.isDashing && (moveX !== 0 || moveY !== 0)) {
+            if (keys.ShiftLeft && player.dashCooldown <= 0 && !player.isDashing && (moveX !== 0 || moveY !== 0)) {
                 playDashSound(); player.isDashing = true; player.dashTimer = 12; player.dashCooldown = 180; player.dashDx = moveX; player.dashDy = moveY;
             }
 
@@ -1206,15 +881,8 @@
             player.x = Math.max(player.radius, Math.min(ARENA_SIZE - player.radius, player.x));
             player.y = Math.max(player.radius, Math.min(ARENA_SIZE - player.radius, player.y));
 
-            // Расчет угла направления взгляда в зависимости от управления
-            if (controlType === 'pc') {
-                const screenCenterX = canvas.width / 2; const screenCenterY = canvas.height / 2;
-                player.angle = Math.atan2(mouse.y - screenCenterY, mouse.x - screenCenterX);
-            } else {
-                if (Math.hypot(joyRightVector.x, joyRightVector.y) > 0.1) {
-                    player.angle = Math.atan2(joyRightVector.y, joyRightVector.x);
-                }
-            }
+            const screenCenterX = canvas.width / 2; const screenCenterY = canvas.height / 2;
+            player.angle = Math.atan2(mouse.y - screenCenterY, mouse.x - screenCenterX);
 
             if (keys.Space && player.currentWeapon !== 3 && player.currentWeapon !== 4 && canShoot) { shoot(); canShoot = false; }
 
@@ -1224,9 +892,15 @@
                 t.angle = Math.atan2(player.y - t.y, player.x - t.x);
                 
                 t.shootTimer++;
-                if (t.shootTimer >= 60) {
-                    playLaserSound();
-                    enemyBullets.push({ x: t.x + Math.cos(t.angle)*30, y: t.y + Math.sin(t.angle)*30, dx: Math.cos(t.angle)*6, dy: Math.sin(t.angle)*6, radius: 6, trail: [] });
+                let maxTurretTimer = (currentDifficulty === 'hard') ? 90 : 60;
+                if (t.shootTimer >= maxTurretTimer) {
+                    if (currentDifficulty === 'hard') {
+                        playLaserSound();
+                        enemyBullets.push({ x: t.x + Math.cos(t.angle)*30, y: t.y + Math.sin(t.angle)*30, dx: Math.cos(t.angle)*player.speed, dy: Math.sin(t.angle)*player.speed, radius: 8, trail: [], isRocket: true });
+                    } else {
+                        playLaserSound();
+                        enemyBullets.push({ x: t.x + Math.cos(t.angle)*30, y: t.y + Math.sin(t.angle)*30, dx: Math.cos(t.angle)*6, dy: Math.sin(t.angle)*6, radius: 6, trail: [] });
+                    }
                     t.shootTimer = 0;
                 }
 
@@ -1258,8 +932,10 @@
                 for (let j = turrets.length - 1; j >= 0; j--) {
                     let t = turrets[j];
                     if (Math.hypot(f.x - t.x, f.y - t.y) < f.radius + t.radius) {
-                        t.hp -= 0.1;
-                        if (t.hp <= 0) { spawnExplosion(t.x, t.y, '#fff'); turrets.splice(j, 1); }
+                        if (currentDifficulty !== 'hard') {
+                            t.hp -= 0.1;
+                            if (t.hp <= 0) { spawnExplosion(t.x, t.y, '#fff'); turrets.splice(j, 1); }
+                        }
                     }
                 }
 
@@ -1272,7 +948,6 @@
                 }
             }
 
-            // Пули игрока уничтожаются строго на краях арены
             for (let i = bullets.length - 1; i >= 0; i--) {
                 let b = bullets[i]; b.x += b.dx; b.y += b.dy;
                 if (currentGraphicsMode === 'high' && b.trail) { b.trail.push({x: b.x, y: b.y}); if(b.trail.length > 5) b.trail.shift(); }
@@ -1296,6 +971,24 @@
 
                 for (let j = enemies.length - 1; j >= 0; j--) {
                     let e = enemies[j]; let dist = Math.hypot(b.x - e.x, b.y - e.y);
+                    
+                    if (dist < b.radius + e.radius + 20) {
+                        if (currentDifficulty === 'hard' && e.type === 'fast' && e.dodgeCooldown <= 0) {
+                            if (Math.random() < 0.40) {
+                                let bAngle = Math.atan2(b.dy, b.dx);
+                                let dir = Math.random() < 0.5 ? 1 : -1;
+                                e.x += Math.cos(bAngle + Math.PI/2 * dir) * 45;
+                                e.y += Math.sin(bAngle + Math.PI/2 * dir) * 45;
+                                e.x = Math.max(e.radius, Math.min(ARENA_SIZE - e.radius, e.x));
+                                e.y = Math.max(e.radius, Math.min(ARENA_SIZE - e.radius, e.y));
+                                e.dodgeCooldown = 30;
+                                continue;
+                            } else {
+                                e.dodgeCooldown = 30;
+                            }
+                        }
+                    }
+
                     if (dist < b.radius + e.radius) {
                         if (e.isBoss && bossShieldActive) { bullets.splice(i, 1); break; }
                         e.hp -= b.damage; bullets.splice(i, 1);
@@ -1324,53 +1017,46 @@
                 bossStatusText.textContent = "ФАЗА ЯРОСТИ!";
                 bossStatusText.style.color = "#ff4757";
                 let boss = enemies.find(e => e.isBoss);
-                if (boss) boss.speed = 3.5;
+                if (boss) boss.speed = (currentDifficulty === 'hard') ? 1.2 : 3.5;
             }
 
-            // Пули врагов и босса не пролетают края + крестообразный диагональный разлет
-            if (!player.isDashing && !player.isInvincible) {
-                for (let i = bossBullets.length - 1; i >= 0; i--) {
-                    let bb = bossBullets[i]; bb.x += bb.dx; bb.y += bb.dy;
-                    if (currentGraphicsMode === 'high' && bb.trail) { bb.trail.push({x: bb.x, y: bb.y}); if(bb.trail.length > 8) bb.trail.shift(); }
-                    
-                    if (bb.x < bb.radius || bb.x > ARENA_SIZE - bb.radius || bb.y < bb.radius || bb.y > ARENA_SIZE - bb.radius) {
-                        if (bossEnraged) { 
-                            const subAngles = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4]; 
-                            subAngles.forEach(ang => { 
-                                enemyBullets.push({ x: Math.max(10, Math.min(ARENA_SIZE - 10, bb.x)), y: Math.max(10, Math.min(ARENA_SIZE - 10, bb.y)), dx: Math.cos(ang) * 4.5, dy: Math.sin(ang) * 4.5, radius: 6, trail: [] }); 
-                            }); 
+            for (let i = bossBullets.length - 1; i >= 0; i--) {
+                let bb = bossBullets[i]; bb.x += bb.dx; bb.y += bb.dy;
+                if (currentGraphicsMode === 'high' && bb.trail) { bb.trail.push({x: bb.x, y: bb.y}); if(bb.trail.length > 8) bb.trail.shift(); }
+                
+                if (bb.x < bb.radius || bb.x > ARENA_SIZE - bb.radius || bb.y < bb.radius || bb.y > ARENA_SIZE - bb.radius) {
+                    if (bossEnraged) { 
+                        let subAngles = [];
+                        if (currentDifficulty === 'easy') {
+                            subAngles = [Math.PI / 4, 5 * Math.PI / 4];
+                        } else {
+                            subAngles = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4]; 
                         }
-                        bossBullets.splice(i, 1); continue;
+                        subAngles.forEach(ang => { 
+                            enemyBullets.push({ x: Math.max(10, Math.min(ARENA_SIZE - 10, bb.x)), y: Math.max(10, Math.min(ARENA_SIZE - 10, bb.y)), dx: Math.cos(ang) * 4.5, dy: Math.sin(ang) * 4.5, radius: 6, trail: [] }); 
+                        }); 
                     }
-                    if (Math.hypot(player.x - bb.x, player.y - bb.y) < player.radius + bb.radius) { gameOver(false); return; }
+                    bossBullets.splice(i, 1); continue;
                 }
-                for (let i = enemyBullets.length - 1; i >= 0; i--) {
-                    let eb = enemyBullets[i]; eb.x += eb.dx; eb.y += eb.dy;
-                    if (currentGraphicsMode === 'high' && eb.trail) { eb.trail.push({x: eb.x, y: eb.y}); if(eb.trail.length > 5) eb.trail.shift(); }
-                    
-                    if (eb.x < eb.radius || eb.x > ARENA_SIZE - eb.radius || eb.y < eb.radius || eb.y > ARENA_SIZE - eb.radius) { 
-                        enemyBullets.splice(i, 1); continue; 
+                if (!player.isDashing && !player.isInvincible && Math.hypot(player.x - bb.x, player.y - bb.y) < player.radius + bb.radius) { gameOver(false); return; }
+            }
+
+            for (let i = enemyBullets.length - 1; i >= 0; i--) {
+                let eb = enemyBullets[i]; eb.x += eb.dx; eb.y += eb.dy;
+                if (currentGraphicsMode === 'high' && eb.trail) { eb.trail.push({x: eb.x, y: eb.y}); if(eb.trail.length > 5) eb.trail.shift(); }
+                
+                let hitWall = eb.x < eb.radius || eb.x > ARENA_SIZE - eb.radius || eb.y < eb.radius || eb.y > ARENA_SIZE - eb.radius;
+                let hitPlayer = !player.isDashing && !player.isInvincible && Math.hypot(player.x - eb.x, player.y - eb.y) < player.radius + eb.radius;
+
+                if (hitWall || hitPlayer) {
+                    if (eb.isRocket) {
+                        gameExplosions.push({x: eb.x, y: eb.y, radius: 0, maxRadius: 45, alpha: 0.8, isHostile: true, color: 'rgba(255, 118, 117, '});
+                        enemyBullets.splice(i, 1);
+                        continue;
+                    } else if (hitPlayer) {
+                        gameOver(false); return;
                     }
-                    if (Math.hypot(player.x - eb.x, player.y - eb.y) < player.radius + eb.radius) { gameOver(false); return; }
-                }
-            } else if (player.isInvincible) {
-                for (let i = bossBullets.length - 1; i >= 0; i--) {
-                    let bb = bossBullets[i]; bb.x += bb.dx; bb.y += bb.dy;
-                    if (bb.x < bb.radius || bb.x > ARENA_SIZE - bb.radius || bb.y < bb.radius || bb.y > ARENA_SIZE - bb.radius) {
-                        if (bossEnraged) { 
-                            const subAngles = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4]; 
-                            subAngles.forEach(ang => { 
-                                enemyBullets.push({ x: Math.max(10, Math.min(ARENA_SIZE - 10, bb.x)), y: Math.max(10, Math.min(ARENA_SIZE - 10, bb.y)), dx: Math.cos(ang) * 4.5, dy: Math.sin(ang) * 4.5, radius: 6, trail: [] }); 
-                            }); 
-                        }
-                        bossBullets.splice(i, 1);
-                    }
-                }
-                for (let i = enemyBullets.length - 1; i >= 0; i--) {
-                    let eb = enemyBullets[i]; eb.x += eb.dx; eb.y += eb.dy;
-                    if (eb.x < eb.radius || eb.x > ARENA_SIZE - eb.radius || eb.y < eb.radius || eb.y > ARENA_SIZE - eb.radius) { 
-                        enemyBullets.splice(i, 1); 
-                    }
+                    enemyBullets.splice(i, 1); continue; 
                 }
             }
 
@@ -1379,6 +1065,8 @@
                 let e = enemies[i]; 
                 let distToPlayer = Math.hypot(player.x - e.x, player.y - e.y); 
                 let angleToPlayer = Math.atan2(player.y - e.y, player.x - e.x);
+
+                if (e.type === 'fast' && e.dodgeCooldown > 0) e.dodgeCooldown--;
                 
                 if (e.burnTimer > 0) {
                     e.burnTimer--;
@@ -1395,17 +1083,121 @@
 
                 if (e.isBoss) {
                     if (!bossShieldActive) {
-                        e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed; bossShootTimer++;
-                        let currentFireRate = bossEnraged ? 60 : 120; if (bossShootTimer >= currentFireRate) { bossShoot(e); bossShootTimer = 0; }
+                        if (currentDifficulty === 'hard') {
+                            if (e.attackState === 0) {
+                                e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed;
+                                bossShootTimer++;
+                                let currentFireRate = bossEnraged ? 60 : 120;
+                                if (bossShootTimer >= currentFireRate) { bossShoot(e); bossShootTimer = 0; }
+
+                                e.dashCycleTimer++;
+                                if (e.dashCycleTimer > 240) {
+                                    e.attackState = 1; e.dashCycleTimer = 30;
+                                }
+                            } else if (e.attackState === 1) {
+                                e.dashCycleTimer--;
+                                if (e.dashCycleTimer <= 0) {
+                                    e.attackState = 2; e.dashCycleTimer = 25; 
+                                    e.dashDx = Math.cos(angleToPlayer); e.dashDy = Math.sin(angleToPlayer);
+                                }
+                            } else if (e.attackState === 2) {
+                                e.x += e.dashDx * 12; e.y += e.dashDy * 12; e.dashCycleTimer--;
+                                if (e.dashCycleTimer <= 0) {
+                                    gameExplosions.push({x: e.x, y: e.y, radius: 0, maxRadius: e.radius * 1.5, alpha: 1, isHostile: true, color: 'rgba(255, 71, 87, '});
+                                    if (bossEnraged) {
+                                        e.attackState = 3; e.dashCycleTimer = 30;
+                                    } else {
+                                        e.attackState = 5; e.dashCycleTimer = 30;
+                                    }
+                                }
+                            } else if (e.attackState === 3) {
+                                e.dashCycleTimer--;
+                                if (e.dashCycleTimer <= 0) {
+                                    e.attackState = 4; e.dashCycleTimer = 25; 
+                                    e.dashDx = Math.cos(angleToPlayer); e.dashDy = Math.sin(angleToPlayer);
+                                }
+                            } else if (e.attackState === 4) {
+                                e.x += e.dashDx * 12; e.y += e.dashDy * 12; e.dashCycleTimer--;
+                                if (e.dashCycleTimer <= 0) {
+                                    for(let a=0; a<16; a++) {
+                                        let ang = (Math.PI*2/16)*a;
+                                        enemyBullets.push({ x: e.x, y: e.y, dx: Math.cos(ang)*5, dy: Math.sin(ang)*5, radius: 6, trail: [] });
+                                    }
+                                    e.attackState = 5; e.dashCycleTimer = 60;
+                                }
+                            } else if (e.attackState === 5) {
+                                e.dashCycleTimer--;
+                                if (e.dashCycleTimer <= 0) {
+                                    e.attackState = 0; e.dashCycleTimer = 0;
+                                }
+                            }
+                        } else {
+                            e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed; bossShootTimer++;
+                            let currentFireRate = bossEnraged ? 60 : 120; if (bossShootTimer >= currentFireRate) { bossShoot(e); bossShootTimer = 0; }
+                        }
                     }
                 } else if (e.isShooter) {
-                    if (distToPlayer > 280) { e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed; } 
-                    else if (distToPlayer < 220) { e.x -= Math.cos(angleToPlayer) * e.speed; e.y -= Math.sin(angleToPlayer) * e.speed; }
-                    
-                    e.x = Math.max(e.radius, Math.min(ARENA_SIZE - e.radius, e.x)); e.y = Math.max(e.radius, Math.min(ARENA_SIZE - e.radius, e.y)); 
-                    
-                    e.shootCooldown++; if (e.shootCooldown >= 60) { enemyBullets.push({ x: e.x, y: e.y, dx: Math.cos(angleToPlayer) * 5, dy: Math.sin(angleToPlayer) * 5, radius: 5.5, trail: [] }); e.shootCooldown = 0; }
-                } else { e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed; }
+                    if (currentDifficulty === 'hard') {
+                        if (e.isAiming) {
+                            e.rifleAimTimer--;
+                            if (e.rifleAimTimer <= 0) {
+                                e.isAiming = false;
+                                enemyBullets.push({ x: e.x, y: e.y, dx: Math.cos(e.aimAngle) * 15, dy: Math.sin(e.aimAngle) * 15, radius: 4, trail: [] });
+                                e.shootCooldown = 0;
+                            }
+                        } else {
+                            if (distToPlayer > 280) { e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed; } 
+                            else if (distToPlayer < 220) { e.x -= Math.cos(angleToPlayer) * e.speed; e.y -= Math.sin(angleToPlayer) * e.speed; }
+                            
+                            e.shootCooldown++;
+                            if (distToPlayer > 300) {
+                                if (e.shootCooldown >= 300) {
+                                    e.isAiming = true; e.rifleAimTimer = 60; e.aimAngle = angleToPlayer; e.shootCooldown = 0;
+                                }
+                            } else if (distToPlayer < 150) {
+                                if (e.shootCooldown >= 60) {
+                                    for(let ang = angleToPlayer - 0.2; ang <= angleToPlayer + 0.2; ang += 0.2) {
+                                        enemyBullets.push({ x: e.x, y: e.y, dx: Math.cos(ang) * 6, dy: Math.sin(ang) * 6, radius: 5, trail: [] });
+                                    }
+                                    e.shootCooldown = 0;
+                                }
+                            } else {
+                                if (e.shootCooldown >= 60) { 
+                                    enemyBullets.push({ x: e.x, y: e.y, dx: Math.cos(angleToPlayer) * 5, dy: Math.sin(angleToPlayer) * 5, radius: 5.5, trail: [] }); e.shootCooldown = 0; 
+                                }
+                            }
+                        }
+                    } else {
+                        if (distToPlayer > 280) { e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed; } 
+                        else if (distToPlayer < 220) { e.x -= Math.cos(angleToPlayer) * e.speed; e.y -= Math.sin(angleToPlayer) * e.speed; }
+                        
+                        e.shootCooldown++; 
+                        let reqCooldown = (currentDifficulty === 'easy') ? 120 : 60;
+                        if (e.shootCooldown >= reqCooldown) { enemyBullets.push({ x: e.x, y: e.y, dx: Math.cos(angleToPlayer) * 5, dy: Math.sin(angleToPlayer) * 5, radius: 5.5, trail: [] }); e.shootCooldown = 0; }
+                    }
+                } else if (e.type === 'normal') {
+                    if (currentDifficulty === 'hard') {
+                        if (e.dashState === 0) {
+                            e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed;
+                            if (distToPlayer < 150) { e.dashState = 1; e.dashTimer = 30; }
+                        } else if (e.dashState === 1) {
+                            e.dashTimer--;
+                            if (e.dashTimer <= 0) { e.dashState = 2; e.dashTimer = 20; e.dashDx = Math.cos(angleToPlayer); e.dashDy = Math.sin(angleToPlayer); }
+                        } else if (e.dashState === 2) {
+                            e.x += e.dashDx * (e.speed * 4); e.y += e.dashDy * (e.speed * 4); e.dashTimer--;
+                            if (e.dashTimer <= 0) { e.dashState = 3; e.dashTimer = 60; }
+                        } else if (e.dashState === 3) {
+                            e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed; e.dashTimer--;
+                            if (e.dashTimer <= 0) e.dashState = 0;
+                        }
+                    } else {
+                        e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed; 
+                    }
+                } else {
+                    e.x += Math.cos(angleToPlayer) * e.speed; e.y += Math.sin(angleToPlayer) * e.speed; 
+                }
+
+                e.x = Math.max(e.radius, Math.min(ARENA_SIZE - e.radius, e.x)); e.y = Math.max(e.radius, Math.min(ARENA_SIZE - e.radius, e.y)); 
 
                 for (let t of turrets) {
                     let d = Math.hypot(e.x - t.x, e.y - t.y);
@@ -1460,6 +1252,31 @@
                 ctx.restore();
             });
 
+            // Линия прицеливания снайпера
+            enemies.forEach(e => {
+                if (e.type === 'shooter' && e.isAiming) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.moveTo(e.x, e.y);
+                    ctx.lineTo(e.x + Math.cos(e.aimAngle) * ARENA_SIZE, e.y + Math.sin(e.aimAngle) * ARENA_SIZE);
+                    ctx.strokeStyle = 'rgba(255, 71, 87, 0.5)';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([10, 10]);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            });
+
+            // Взрывы
+            gameExplosions.forEach(exp => {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(exp.x, exp.y, exp.radius, 0, Math.PI*2);
+                ctx.fillStyle = exp.color + exp.alpha + ')';
+                ctx.fill();
+                ctx.restore();
+            });
+
             // Частицы
             if (currentGraphicsMode === 'high') { particles.forEach(p => { ctx.save(); ctx.globalAlpha = p.alpha; ctx.fillStyle = p.color; ctx.shadowBlur = 10; ctx.shadowColor = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }); }
 
@@ -1474,10 +1291,18 @@
             });
 
             // Пули врагов
-            ctx.fillStyle = '#ffd32a'; 
             enemyBullets.forEach(eb => {
-                if (currentGraphicsMode === 'high' && eb.trail) { ctx.beginPath(); ctx.strokeStyle = '#ffd32a'; ctx.lineWidth = eb.radius * 0.6; ctx.globalAlpha = 0.25; for(let t=0; t<eb.trail.length; t++) { if(t===0) ctx.moveTo(eb.trail[t].x, eb.trail[t].y); else ctx.lineTo(eb.trail[t].x, eb.trail[t].y); } ctx.stroke(); ctx.globalAlpha = 1; }
+                if (eb.isRocket) {
+                    ctx.fillStyle = '#ff7675';
+                    if (currentGraphicsMode === 'high') {
+                        ctx.shadowBlur = 10; ctx.shadowColor = '#ff7675';
+                    }
+                } else {
+                    ctx.fillStyle = '#ffd32a';
+                    if (currentGraphicsMode === 'high' && eb.trail) { ctx.beginPath(); ctx.strokeStyle = '#ffd32a'; ctx.lineWidth = eb.radius * 0.6; ctx.globalAlpha = 0.25; for(let t=0; t<eb.trail.length; t++) { if(t===0) ctx.moveTo(eb.trail[t].x, eb.trail[t].y); else ctx.lineTo(eb.trail[t].x, eb.trail[t].y); } ctx.stroke(); ctx.globalAlpha = 1; }
+                }
                 drawShape(isRetro, eb.x, eb.y, eb.radius);
+                if (eb.isRocket && currentGraphicsMode === 'high') ctx.shadowBlur = 0;
             });
 
             // Пули босса
